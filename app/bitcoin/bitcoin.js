@@ -1,5 +1,5 @@
 const bitcoin = require('bitcoinjs-lib');
-const storage = require('../persistence.js');
+const storage = require('./persistence');
 
 class BitcoinAddress {
     createAddress() {

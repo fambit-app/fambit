@@ -1,7 +1,7 @@
-const bitcoin = require('../bitcoin');
-const address = bitcoin.BitcoinAddress.createAddress();
+const bitcoin = require('../bitcoin/bitcoin');
 
-window.onload = function() {
+const address = bitcoin.BitcoinAddress.createAddress();
+window.onload = function () {
     console.log(address);
     document.getElementById('private-key').textContent = 'private-key';
     document.getElementById('public-key').textContent = 'public-key';

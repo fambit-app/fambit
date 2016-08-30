@@ -65,7 +65,10 @@
       "radix": 0,
       "new-cap": 0
     },
-    "globals": {}
+    "globals": {
+      "window": true,
+      "document": false
+    }
   },
   "dependencies": {
     "bitcoinjs-lib": "^2.2.0"
