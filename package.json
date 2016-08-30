@@ -6,7 +6,7 @@
   "scripts": {
     "test": "ava",
     "lint": "eslint ./app ./test",
-    "build": "mkdirp gen/app && copyfiles resources/* gen && browserify app/extension/index.js -o gen/app/index.js",
+    "build": "mkdirp gen/app && copyfiles resources/* gen && copyfiles manifest.json gen && browserify app/extension/index.js -o gen/app/index.js",
     "dist": "rimraf gen && npm run build"
   },
   "repository": {
