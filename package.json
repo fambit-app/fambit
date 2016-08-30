@@ -1,0 +1,28 @@
+{
+  "name": "fambit",
+  "version": "0.1.0",
+  "description": "WebExtension to microdonate to visited websites",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fambit-app/fambit.git"
+  },
+  "keywords": [
+    "bitcoin",
+    "donate",
+    "webextension",
+    "chrome",
+    "firefox",
+    "opera",
+    "bc"
+  ],
+  "author": "Mitchell Hentges/Sheldon Roddick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fambit-app/fambit/issues"
+  },
+  "homepage": "https://github.com/fambit-app/fambit#readme"
+}
