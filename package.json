@@ -59,14 +59,15 @@
       "no-param-reassign": 0,
       "no-underscore-dangle": 0,
       "quote-props": 0,
-      "valid-jsdoc": [
-        "error",
-        {
-          "requireReturn": false
-        }
-      ],
-      "vars-on-top": 0
+      "valid-jsdoc": 0,
+      "vars-on-top": 0,
+      "spaced-comment": 0,
+      "radix": 0,
+      "new-cap": 0
     },
     "globals": {}
+  },
+  "dependencies": {
+    "bitcoinjs-lib": "^2.2.0"
   }
 }
