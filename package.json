@@ -2,9 +2,10 @@
   "name": "fambit",
   "version": "0.1.0",
   "description": "WebExtension to microdonate to visited websites",
-  "main": "src/index.js",
+  "main": "app/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava",
+    "lint": "eslint ./app ./test"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,39 @@
   "bugs": {
     "url": "https://github.com/fambit-app/fambit/issues"
   },
-  "homepage": "https://github.com/fambit-app/fambit#readme"
+  "homepage": "https://github.com/fambit-app/fambit#readme",
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "eslint": "^3.4.0",
+    "eslint-config-airbnb-base": "^5.0.3",
+    "eslint-plugin-import": "^1.14.0"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "rules": {
+      "indent": ["error", 4],
+      "import/no-extraneous-dependencies": 0,
+      "no-console": 0,
+      "comma-dangle": 0,
+      "consistent-return": 0,
+      "func-names": 0,
+      "linebreak-style": 0,
+      "max-len": [
+        "error",
+        120
+      ],
+      "no-continue": 0,
+      "no-param-reassign": 0,
+      "no-underscore-dangle": 0,
+      "quote-props": 0,
+      "valid-jsdoc": [
+        "error",
+        {
+          "requireReturn": false
+        }
+      ],
+      "vars-on-top": 0
+    },
+    "globals": {}
+  }
 }
