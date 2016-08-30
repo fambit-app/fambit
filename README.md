@@ -10,12 +10,13 @@ interesting information about vehicle maintenance. He has installed Fambit onto 
 a small amount of bitcoin to his instance of the plugin. Now, each time he reads one of those neat blog posts about
 cars, Fambit will express his gratuity by sending a fraction of its remaining bitcoin funds to the blog author.
 
-## Are you making a paywall? Don't you know paywalls are worse than old oatmeal?
+## So, are you making a paywall? Don't you know paywalls are worse than old oatmeal?
 
 Fambit is _not_ a requirement to access content. Only users that _want_ to participate will be spending any bitcoin.
-The "Fambit Theory"™ is that many consumers _do_ want to pay for content, but not enough that it's worth manually paying
-some amount of actual money. The beauty of bitcoin is that very small amounts of value can be transferred, so users are
-able to express their gratitude in a way that's negligible per-user, yet can be a bonus for the content producer.
+The "Fambit Theory"™ is that many consumers _do_ want to pay for content, but not enough that it's worth manually
+spending any amount of actual money. The beauty of bitcoin is that very small amounts of value can be transferred, so
+users are able to express their gratitude in a way that's negligible per-user, yet can be a bonus for the content
+producer.
 
 ## but_why.gif?
 
@@ -27,8 +28,7 @@ website maintainers won't be forced to turn to advertising to cover costs.
 ## I'm sold. How do I participate?
 
 This is a deliverable for our final-year project at Thompson Rivers University, so there'll definitely be an
-installable browser plugin on the browser plugin repositories by the end of 2016. However, no deliverables exist yet,
-sorry (#canada).
+installable browser plugin by the end of 2016. However, no deliverables exist yet, sorry (#canada).
 
 ## How do I contribute?
 
