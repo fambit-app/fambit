@@ -1,22 +1,29 @@
 const PRIVATE_KEY = 'fambit-private-key';
 const PUBLIC_KEY = 'fambit-public-key';
 
-function hasBitcoinAddress() {
-    return parent.localStorage.hasOwnProperty(PRIVATE_KEY) &&
-        parent.localStorage.hasOwnProperty(PUBLIC_KEY);
+class Persistence {
+    constructor(save, retrieve) {
+        this.save = save;
+        this.retrieve = retrieve;
+    }
+
+    hasBitcoinAddress() {
+        return this.getPrivateKey() &&
+            this.getPublicKey();
+    }
+
+    setAddress(keyPair) {
+        this.save(PRIVATE_KEY, keyPair.toWIF());
+        this.save(PUBLIC_KEY, keyPair.getAddress());
+    }
+
+    getPrivateKey() {
+        return this.retrieve(PRIVATE_KEY);
+    }
+
+    getPublicKey() {
+        return this.retrieve(PUBLIC_KEY);
+    }
 }
 
-function addAddress(keyPair) {
-    parent.localStorage.setItem(PRIVATE_KEY, keyPair.toWIF());
-    parent.localStorage.setItem(PUBLIC_KEY, keyPair.getAddress());
-}
-
-function getPrivateKey() {
-    return parent.localStorage.getItem(PRIVATE_KEY);
-}
-
-function getPublicKey() {
-    return parent.localStorage.getItem(PUBLIC_KEY);
-}
-
-module.exports = { hasBitcoinAddress, addAddress, getPrivateKey, getPublicKey };
+module.exports = Persistence;
