@@ -2,18 +2,22 @@ const bitcoin = require('bitcoinjs-lib');
 const storage = require('../persistence.js');
 
 class BitcoinAddress {
+    constructor(save, retrieve) {
+        this.persistence = storage.Persistence(save, retrieve);
+    }
+
     createAddress() {
         if (this._hasBitcoinAddress()) return false;
 
         const keyPair = this._generateKeyPair();
 
-        storage.addAddress(keyPair);
+        this.persistence.setAddress(keyPair);
 
         return keyPair;
     }
 
     getAddress() {
-        return bitcoin.ECPair.fromWIF(storage.getPrivateKey());
+        return bitcoin.ECPair.fromWIF(this.persistence.getPrivateKey());
     }
 
     _generateKeyPair() {
@@ -21,7 +25,7 @@ class BitcoinAddress {
     }
 
     _hasBitcoinAddress() {
-        return storage.hasBitcoinAddress();
+        return this.persistence.hasBitcoinAddress();
     }
 }
 
