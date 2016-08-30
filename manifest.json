@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Fambit",
+  "version": "0.1.0",
+  "description": "WebExtension to microdonate to visited websites",
+
+  "browser_action": {
+    "default_icon": "resources/icon-32.png",
+    "default_title": "Fambit",
+    "default_popup": "resources/extension.html"
+  },
+
+  "applications": {
+    "gecko": {
+      "id": "fambit@fuzzlesoft.ca"
+    }
+  }
+}
