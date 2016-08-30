@@ -1,4 +1,4 @@
-var bitcoin = require('bitcoin.js');
+var bitcoin = require('./bitcoin/bitcoin.js');
 
 
 class Setup {
