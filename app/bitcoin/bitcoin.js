@@ -1,11 +1,11 @@
-var bitcoin = require('bitcoinjs-lib');
-var storage = require('persistence.js');
+const bitcoin = require('bitcoinjs-lib');
+const storage = require('../persistence.js');
 
 class BitcoinAddress {
     createAddress() {
-        if (this.hasBitcoinAddress()) return false;
+        if (this._hasBitcoinAddress()) return false;
 
-        var keyPair = this.generateKeyPair();
+        const keyPair = this._generateKeyPair();
 
         storage.addAddress(keyPair);
 
@@ -16,15 +16,14 @@ class BitcoinAddress {
         return bitcoin.ECPair.fromWIF(storage.getPrivateKey());
     }
 
-    private generateKeyPair() {
-        return bitcoin.ECPair.makeRandom()
+    _generateKeyPair() {
+        return bitcoin.ECPair.makeRandom();
     }
 
-    private hasBitcoinAddress() {
-        return storage.hasBitcoinAddress()
+    _hasBitcoinAddress() {
+        return storage.hasBitcoinAddress();
     }
 }
-
 
 class BitcoinTransfer {
 
@@ -38,16 +37,16 @@ class BitcoinTransfer {
      * @param amount    - Amount of bitcoin to buildTransaction (in Satoshi)
      */
     static buildTransaction(sourcetx, sourceIndex, from, to, amount) {
-        var transaction = new bitcoin.TransactionBuilder();
+        const transaction = new bitcoin.TransactionBuilder();
 
         transaction.addInput(sourcetx, sourceIndex);
         transaction.addOutput(to, parseInt(amount));
 
-        var privateKey = bitcoin.ECPair.fromWIF(from);
+        const privateKey = bitcoin.ECPair.fromWIF(from);
         transaction.sign(0, privateKey);
 
         return transaction.build();
     }
 }
 
-module.exports = {BitcoinAddress, BitcoinTransfer};
+module.exports = { BitcoinAddress, BitcoinTransfer };

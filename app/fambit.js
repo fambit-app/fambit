@@ -3,14 +3,14 @@ var bitcoin = require('./bitcoin/bitcoin.js');
 
 class Setup {
     static initializePlugin() {
-        var address = this.createWallet();
+        const address = this.createWallet();
 
         //TODO provide address to user, prompt user to provide funds to wallet
     }
 
-    private createWallet() {
-        return bitcoin.BitcoinAddress().createAddress()
+    createWallet() {
+        return bitcoin.BitcoinAddress().createAddress();
     }
 }
 
-module.exports = {Setup};
+module.exports = { Setup };
