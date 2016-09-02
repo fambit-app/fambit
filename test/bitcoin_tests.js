@@ -1,4 +1,5 @@
 import test from 'ava';
+
 const bitcoin = require('../app/bitcoin/bitcoin.js');
 const persistence = require('./mock_persistence.js');
 

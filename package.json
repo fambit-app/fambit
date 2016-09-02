@@ -63,7 +63,8 @@
       "vars-on-top": 0,
       "spaced-comment": 0,
       "radix": 0,
-      "new-cap": 0
+      "new-cap": 0,
+      "no-return-assign": 0
     },
     "globals": {
       "window": true,

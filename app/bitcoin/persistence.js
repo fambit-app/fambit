@@ -8,8 +8,8 @@ class Persistence {
     }
 
     hasBitcoinAddress() {
-        return this.getPrivateKey() != undefined &&
-            this.getPublicKey() != undefined;
+        return this.getPrivateKey() !== undefined &&
+            this.getPublicKey() !== undefined;
     }
 
     setAddress(keyPair) {
