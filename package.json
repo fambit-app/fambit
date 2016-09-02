@@ -73,5 +73,11 @@
   },
   "dependencies": {
     "bitcoinjs-lib": "^2.2.0"
+  },
+  "ava": {
+    "files": [
+      "test/*.js",
+      "!test/mock_persistence.js"
+    ]
   }
 }
