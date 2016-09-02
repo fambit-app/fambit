@@ -32,7 +32,7 @@ class BitcoinAddress {
 
     checkBalance() {
         const address = this.persistence.getPublicKey();
-        return this.serverRequests.getBalance();
+        return this.serverRequests.getBalance(address);
     }
 }
 
