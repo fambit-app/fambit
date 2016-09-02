@@ -67,7 +67,8 @@
     },
     "globals": {
       "window": true,
-      "document": false
+      "document": true,
+      "XMLHttpRequest": true
     }
   },
   "dependencies": {
