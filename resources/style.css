@@ -1,0 +1,15 @@
+body {
+    width: 500px;
+}
+
+.debug-view {
+    display: block;
+    border: 1px solid #303036;
+    background-color: #fdfdff;
+    padding: 2px;
+    margin-bottom: 2px;
+}
+
+.debug-view:last-child {
+    margin-bottom: 0;
+}

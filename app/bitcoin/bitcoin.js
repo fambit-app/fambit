@@ -1,9 +1,9 @@
 const bitcoin = require('bitcoinjs-lib');
-const storage = require('../persistence.js');
+const Persistence = require('./persistence');
 
 class BitcoinAddress {
     constructor(save, retrieve) {
-        this.persistence = storage.Persistence(save, retrieve);
+        this.persistence = new Persistence(save, retrieve);
     }
 
     createAddress() {
