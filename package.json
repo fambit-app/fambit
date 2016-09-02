@@ -6,8 +6,9 @@
   "scripts": {
     "test": "ava",
     "lint": "eslint ./app ./test",
-    "build": "mkdirp gen/app && copyfiles resources/* gen && copyfiles manifest.json gen && browserify app/extension/index.js -o gen/app/index.js",
-    "dist": "rimraf gen && npm run build"
+    "build": "gulp build",
+    "dev": "gulp dev",
+    "dist": "gulp clean dist"
   },
   "repository": {
     "type": "git",
@@ -31,12 +32,13 @@
   "devDependencies": {
     "ava": "^0.16.0",
     "browserify": "^13.1.0",
-    "copyfiles": "^1.0.0",
+    "browserify-incremental": "^3.1.1",
+    "del": "^2.2.2",
     "eslint": "^3.4.0",
     "eslint-config-airbnb-base": "^5.0.3",
     "eslint-plugin-import": "^1.14.0",
-    "mkdirp": "^0.5.1",
-    "rimraf": "^2.5.4"
+    "gulp": "^3.9.1",
+    "vinyl-source-stream": "^1.1.0"
   },
   "eslintConfig": {
     "extends": "airbnb-base",
