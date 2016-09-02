@@ -1,9 +1,10 @@
 const bitcoin = require('bitcoinjs-lib');
-const Persistence = require('./persistence');
+const BitcoinServerRequest = require('./servers');
 
 class BitcoinAddress {
-    constructor(save, retrieve) {
-        this.persistence = new Persistence(save, retrieve);
+    constructor(persistence) {
+        this.persistence = persistence;
+        this.serverRequests = new BitcoinServerRequest();
     }
 
     createAddress() {
@@ -16,7 +17,7 @@ class BitcoinAddress {
         return keyPair;
     }
 
-    getAddress() {
+    getKeyPair() {
         return bitcoin.ECPair.fromWIF(this.persistence.getPrivateKey());
     }
 
@@ -26,6 +27,11 @@ class BitcoinAddress {
 
     _hasBitcoinAddress() {
         return this.persistence.hasBitcoinAddress();
+    }
+
+    checkBalance() {
+        const address = this.persistence.getPublicKey();
+        return this.serverRequests.getBalance(address);
     }
 }
 

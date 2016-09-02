@@ -65,14 +65,23 @@
       "vars-on-top": 0,
       "spaced-comment": 0,
       "radix": 0,
-      "new-cap": 0
+      "new-cap": 0,
+      "no-return-assign": 0,
+      "eol-last": 0
     },
     "globals": {
       "window": true,
-      "document": false
+      "document": true,
+      "XMLHttpRequest": true
     }
   },
   "dependencies": {
     "bitcoinjs-lib": "^2.2.0"
+  },
+  "ava": {
+    "files": [
+      "test/*.js",
+      "!test/mock_persistence.js"
+    ]
   }
 }
