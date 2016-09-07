@@ -71,7 +71,9 @@
     "globals": {
       "window": true,
       "document": true,
-      "XMLHttpRequest": true
+      "XMLHttpRequest": true,
+      "chrome": true,
+      "localStorage": true
     }
   },
   "dependencies": {
