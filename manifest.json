@@ -30,6 +30,7 @@
 
   "permissions": [
     "https://*.blockchain.info/*",
-    "activeTab"
+    "activeTab",
+    "alarms"
   ]
 }
