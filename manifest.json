@@ -16,7 +16,20 @@
     }
   },
 
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["readRecipient.js"]
+    }
+  ],
+
   "permissions": [
-    "https://*.blockchain.info/*"
+    "https://*.blockchain.info/*",
+    "activeTab"
   ]
 }
