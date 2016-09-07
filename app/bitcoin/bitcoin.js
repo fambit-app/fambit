@@ -37,20 +37,49 @@ class BitcoinAddress {
 
 class BitcoinTransfer {
 
-    //TODO: Allow #buildTransaction() to take a list of sources
+    constructor() {
+        this.inputs = [];
+        this.outputs = [];
+    }
+
+    addInput(input) {
+        if (input.constructor != TransactionInput) {
+            console.log('ERROR : input not of type TransactionInput');
+            return;
+        }
+
+        this.inputs.add(input);
+    }
+
+    addOutput(output) {
+        if (output.constructor != TransactionOutput) {
+            console.log('ERROR : input not of type TransactionOutput');
+            return;
+        }
+
+        this.outputs.add(output);
+    }
+
     /**
      * Sends an amount of bitcoin to the destination wallet
-     * @param sourcetx  - The transaction to use as a source for this transaction
-     * @param sourceIndex   - The index of the source output in its transaction
-     * @param to        - Public key of the recipient's bitcoin wallet
+     * @param transfer  - An instance of BitcoinTransfer containing a list of inputs and a list of outputs
      * @param from      - Private key of the sender's bitcoin wallet
-     * @param amount    - Amount of bitcoin to buildTransaction (in Satoshi)
      */
-    static buildTransaction(sourcetx, sourceIndex, from, to, amount) {
+    static buildTransaction(transfer, from) {
+        if (transfer.constructor != BitcoinTransfer) {
+            console.log('ERROR : Function should be provided an instance of BitcoinTransfer');
+            return;
+        }
+
         const transaction = new bitcoin.TransactionBuilder();
 
-        transaction.addInput(sourcetx, sourceIndex);
-        transaction.addOutput(to, parseInt(amount));
+        for (const input in transfer.inputs) {
+            transaction.addInput(input.tx, input.index);
+        }
+
+        for (const output in transfer.outputs) {
+            transaction.addOutput(output.recipient, output.amount)
+        }
 
         const privateKey = bitcoin.ECPair.fromWIF(from);
         transaction.sign(0, privateKey);
@@ -59,4 +88,18 @@ class BitcoinTransfer {
     }
 }
 
-module.exports = { BitcoinAddress, BitcoinTransfer };
+class TransactionInput {
+    constructor(tx, index) {
+        this.tx = tx;
+        this.index = index;
+    }
+}
+
+class TransactionOutput {
+    constructor(recipient, amount) {
+        this.recipient = recipient;
+        this.amount = amount;
+    }
+}
+
+module.exports = { BitcoinAddress, BitcoinTransfer, TransactionInput, TransactionOutput };
