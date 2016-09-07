@@ -1,3 +1,5 @@
+const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 days
+
 chrome.runtime.onMessage.addListener((request) => {
     if (request.action === 'PAGE_LOAD') {
         // Handle recipient from last page
@@ -12,4 +14,22 @@ chrome.runtime.onMessage.addListener((request) => {
             localStorage.setItem('recipient', request.recipient);
         }
     }
+});
+
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason !== 'install') {
+        return;
+    }
+
+    chrome.alarms.create('SUBMIT_TRANSACTION', {
+        periodInMinutes: TRANSACTION_DELAY_MINUTES
+    });
+});
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name !== 'SUBMIT_TRANSACTION') {
+        return;
+    }
+
+    console.log('Submitting transactions');
 });
