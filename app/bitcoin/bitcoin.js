@@ -44,6 +44,24 @@ class BitcoinAddress {
     }
 }
 
+
+class TransactionInput {
+    constructor(tx, index, value) {
+        this.tx = tx;
+        this.index = index;
+        this.value = value;
+    }
+}
+
+
+class TransactionOutput {
+    constructor(recipient, amount) {
+        this.recipient = recipient;
+        this.amount = amount;
+    }
+}
+
+
 //Instantiate BitcoinTransfer to begin building a list of inputs and outputs
 class BitcoinTransfer {
 
@@ -57,7 +75,7 @@ class BitcoinTransfer {
     }
 
     addInput(input) {
-        if (input.constructor != TransactionInput) {
+        if (input.constructor !== TransactionInput) {
             console.log('ERROR : input not of type TransactionInput');
             return;
         }
@@ -77,23 +95,6 @@ class BitcoinTransfer {
 
     sufficientInput() {
         return this.currentInputValue - (this.currentInputValue * this.PERCENTAGE_CONSTANT) >= this.THRESHOLD;
-    }
-}
-
-
-
-class TransactionInput {
-    constructor(tx, index, value) {
-        this.tx = tx;
-        this.index = index;
-        this.value = value;
-    }
-}
-
-class TransactionOutput {
-    constructor(recipient, amount) {
-        this.recipient = recipient;
-        this.amount = amount;
     }
 }
 

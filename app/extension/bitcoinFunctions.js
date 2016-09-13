@@ -1,15 +1,16 @@
 const bitcoin = require('../bitcoin/bitcoin.js');
 const persistence = require('../bitcoin/persistence.js');
+
 const address = new bitcoin.BitcoinAddress(persistence);
-var transfer = new bitcoin.BitcoinTransfer(address);
+let transfer = new bitcoin.BitcoinTransfer(address);
 
 
-function addDonation(address) {
+function addDonation() {
     if (!transfer.sufficientInput()) {
         const unusedInputs = address.requestTransactionList()
-            .map(output => ({tx_hash: output.tx_hash, tx_index: output.tx_index, value: output.value}))
+            .map(output => ({ tx_hash: output.tx_hash, tx_index: output.tx_index, value: output.value }))
             .filter((output) => !transfer.inputs.some((input) => {
-                input.index === output.tx_index && input.tx == output.tx_hash
+                input.index === output.tx_index && input.tx === output.tx_hash;
             }));
 
 
@@ -33,7 +34,7 @@ function addDonation(address) {
  * @param from      - Private key of the sender's bitcoin wallet
  */
 function buildTransaction(from) {
-    if (transfer.constructor != bitcoin.BitcoinTransfer) {
+    if (transfer.constructor !== bitcoin.BitcoinTransfer) {
         console.log('ERROR : Function should be provided an instance of BitcoinTransfer');
         return;
     }
@@ -45,7 +46,7 @@ function buildTransaction(from) {
     }
 
     for (const output in transfer.outputs) {
-        transaction.addOutput(output.recipient, output.amount)
+        transaction.addOutput(output.recipient, output.amount);
     }
 
     transfer = new bitcoin.BitcoinTransfer(address);    //Refresh transfer for next use, need to abstract this better
