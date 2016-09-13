@@ -13,16 +13,22 @@ gulp.task('js', function() {
     const browserify = require('browserify');
     const incremental = require('browserify-incremental');
     const source = require('vinyl-source-stream');
-    const opts = {
-        debug: true,
-        cacheFile: './gen/background.js.cache'
-    };
+   
+   function compile(filename) {
+           const opts = {
+            debug: true,
+            cacheFile: `./gen/${filename}.js.cache`
+        };
 
-    const bundle = browserify('./app/extension/background.js', Object.assign(opts, incremental.args));
-    incremental(bundle);
-    return bundle.bundle()
-        .pipe(source('background.js'))
-        .pipe(gulp.dest('gen'));
+        const bundle = browserify(`./app/extension/${filename}.js`, Object.assign(opts, incremental.args));
+        incremental(bundle);
+        return bundle.bundle()
+            .pipe(source(`${filename}.js`))
+            .pipe(gulp.dest('gen'));
+   }
+   
+   compile('background');
+   compile('popup');   
 });
 
 gulp.task('resources', function() {
