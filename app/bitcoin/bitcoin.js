@@ -85,18 +85,27 @@ const transfer = BitcoinTransfer();
 const address = BitcoinAddress();
 
 function addDonation(address) {
-    if (transfer.sufficientInput()) {
-        transfer.addOutput(address);
-        return;
+    if (!transfer.sufficientInput()) {
+        const unusedInputs = address.requestTransactionList()
+            .map(output => ({tx_hash: output.tx_hash, tx_index: output.tx_index, value: output.value}))
+            .filter((output) => !transfer.inputs.some((input) => {
+                input.index === output.tx_index && input.tx == output.tx_hash
+            }));
+
+
+        do {
+            if (unusedInputs.isEmpty) return false;
+
+            while (transfer.inputs.contains(unusedInputs[0])) unusedInputs.remove(0);
+            
+            const newInput = unusedInputs[0];
+            transfer.addInput(new TransactionInput(newInput.tx_hash, newInput.tx_index, newInput.value));
+        } while (!transfer.sufficientInput());
     }
 
-    const unusedInputs = address.requestTransactionList()
-        .map(output => ({tx_hash: output.tx_hash, tx_index: output.tx_index}))
-        .filter((output) => !transfer.inputs.some((input) => {
-            input.index === output.tx_index && input.tx == output.tx_hash
-        }));
 
-
+    transfer.addOutput(address);
+    return true;
 }
 
 /**
