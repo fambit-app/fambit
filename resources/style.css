@@ -1,15 +1,63 @@
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Lato Light'), local('Lato-Light'), url(lato-300.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'), local('Lato-Regular'), url(lato-400.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Lato Bold'), local('Lato-Bold'), url(lato-700.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    width: 500px;
+    width: 400px;
+    background-color: #4f3130;
 }
 
-.debug-view {
-    display: block;
-    border: 1px solid #303036;
-    background-color: #fdfdff;
-    padding: 2px;
-    margin-bottom: 2px;
+header {
+    border-bottom: 2px solid #aa5042;
+    border-top: 3px solid #aa5042;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    background-color: #d8d78f;
+    color: #4f3130;
 }
 
-.debug-view:last-child {
-    margin-bottom: 0;
+.hint {
+    color: #351c1b;
+    font-size: 8px;
+}
+
+h2 {
+    font-family: 'Lato', sans-serif;
+}
+
+footer {
+    border-top: 5px solid #aa5042;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.bitcoin-address {
+    margin: 10px;
+    color: #d8bd8a;
+    font-size: 18px;
+    font-family: 'Inconsolata', serif;
+    text-align: center;
+    text-shadow: 0 1px 3px #753742;
 }

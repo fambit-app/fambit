@@ -2,7 +2,6 @@
   "name": "fambit",
   "version": "0.1.0",
   "description": "WebExtension to microdonate to visited websites",
-  "main": "app/index.js",
   "scripts": {
     "test": "ava",
     "lint": "eslint ./app ./test",
@@ -72,7 +71,9 @@
     "globals": {
       "window": true,
       "document": true,
-      "XMLHttpRequest": true
+      "XMLHttpRequest": true,
+      "chrome": true,
+      "localStorage": true
     }
   },
   "dependencies": {

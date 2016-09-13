@@ -6,7 +6,7 @@ gulp.task('dist', ['dist-js', 'dist-resources']);
 
 gulp.task('watch', function() {
     gulp.watch('app/**', ['js']);
-    gulp.watch('resources/**', ['resources']);
+    gulp.watch(['manifest.json', 'resources/**'], ['resources']);
 });
 
 gulp.task('js', function() {
@@ -15,13 +15,13 @@ gulp.task('js', function() {
     const source = require('vinyl-source-stream');
     const opts = {
         debug: true,
-        cacheFile: './gen/index.js.cache'
+        cacheFile: './gen/background.js.cache'
     };
 
-    const bundle = browserify('./app/extension/index.js', Object.assign(opts, incremental.args));
+    const bundle = browserify('./app/extension/background.js', Object.assign(opts, incremental.args));
     incremental(bundle);
     return bundle.bundle()
-        .pipe(source('index.js'))
+        .pipe(source('background.js'))
         .pipe(gulp.dest('gen'));
 });
 
@@ -38,9 +38,9 @@ gulp.task('dist-js', function() {
     const browserify = require('browserify');
     const source = require('vinyl-source-stream');
 
-    const bundle = browserify('./app/extension/index.js');
+    const bundle = browserify('./app/extension/background.js');
     return bundle.bundle()
-        .pipe(source('index.js'))
+        .pipe(source('background.js'))
         .pipe(gulp.dest('dist'));
 });
 
