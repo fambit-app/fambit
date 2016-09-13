@@ -1,7 +1,7 @@
 const bitcoin = require('../bitcoin/bitcoin.js');
 const persistence = require('../bitcoin/persistence.js');
 const address = new bitcoin.BitcoinAddress(persistence);
-const transfer = new bitcoin.BitcoinTransfer(address);
+var transfer = new bitcoin.BitcoinTransfer(address);
 
 
 function addDonation(address) {
@@ -30,10 +30,9 @@ function addDonation(address) {
 
 /**
  * Sends an amount of bitcoin to the destination wallet
- * @param transfer  - An instance of BitcoinTransfer containing a list of inputs and a list of outputs
  * @param from      - Private key of the sender's bitcoin wallet
  */
-function buildTransaction(transfer, from) {
+function buildTransaction(from) {
     if (transfer.constructor != bitcoin.BitcoinTransfer) {
         console.log('ERROR : Function should be provided an instance of BitcoinTransfer');
         return;
@@ -48,6 +47,8 @@ function buildTransaction(transfer, from) {
     for (const output in transfer.outputs) {
         transaction.addOutput(output.recipient, output.amount)
     }
+
+    transfer = new bitcoin.BitcoinTransfer(address);    //Refresh transfer for next use, need to abstract this better
 
     const privateKey = bitcoin.ECPair.fromWIF(from);
     transaction.sign(0, privateKey);
