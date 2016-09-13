@@ -81,59 +81,6 @@ class BitcoinTransfer {
 }
 
 
-const transfer = BitcoinTransfer();
-const address = BitcoinAddress();
-
-function addDonation(address) {
-    if (!transfer.sufficientInput()) {
-        const unusedInputs = address.requestTransactionList()
-            .map(output => ({tx_hash: output.tx_hash, tx_index: output.tx_index, value: output.value}))
-            .filter((output) => !transfer.inputs.some((input) => {
-                input.index === output.tx_index && input.tx == output.tx_hash
-            }));
-
-
-        do {
-            if (unusedInputs.isEmpty) return false;
-
-            while (transfer.inputs.contains(unusedInputs[0])) unusedInputs.remove(0);
-            
-            const newInput = unusedInputs[0];
-            transfer.addInput(new TransactionInput(newInput.tx_hash, newInput.tx_index, newInput.value));
-        } while (!transfer.sufficientInput());
-    }
-
-
-    transfer.addOutput(address);
-    return true;
-}
-
-/**
- * Sends an amount of bitcoin to the destination wallet
- * @param transfer  - An instance of BitcoinTransfer containing a list of inputs and a list of outputs
- * @param from      - Private key of the sender's bitcoin wallet
- */
-function buildTransaction(transfer, from) {
-    if (transfer.constructor != BitcoinTransfer) {
-        console.log('ERROR : Function should be provided an instance of BitcoinTransfer');
-        return;
-    }
-
-    const transaction = new bitcoin.TransactionBuilder();
-
-    for (const input in transfer.inputs) {
-        transaction.addInput(input.tx, input.index);
-    }
-
-    for (const output in transfer.outputs) {
-        transaction.addOutput(output.recipient, output.amount)
-    }
-
-    const privateKey = bitcoin.ECPair.fromWIF(from);
-    transaction.sign(0, privateKey);
-
-    return transaction.build();
-}
 
 class TransactionInput {
     constructor(tx, index, value) {
@@ -150,4 +97,4 @@ class TransactionOutput {
     }
 }
 
-module.exports = { BitcoinAddress, buildTransaction, addDonation };
+module.exports = { BitcoinAddress, BitcoinTransfer, TransactionInput };
