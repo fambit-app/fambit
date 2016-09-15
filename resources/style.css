@@ -27,37 +27,45 @@
 
 body {
     width: 400px;
-    background-color: #4f3130;
+    background-color: #f9f4f5;
 }
 
 header {
-    border-bottom: 2px solid #aa5042;
-    border-top: 3px solid #aa5042;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-    padding: 10px;
-    background-color: #d8d78f;
-    color: #4f3130;
-}
-
-.hint {
-    color: #351c1b;
-    font-size: 8px;
-}
-
-h2 {
     font-family: 'Lato', sans-serif;
+    font-size: 1.5em;
+    padding: 10px;
+    color: #555b6e;
 }
 
-footer {
-    border-top: 5px solid #aa5042;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+.small-divider {
+    margin: 0 30%;
+    height: 1px;
+    background-color: #90708c;
+}
+
+.introduction {
+    padding: 10px 20px;
+    border-bottom: 3px solid #90708c;
+    color: #777;
+}
+
+.question {
+    margin: 0 1px;
+    font-size: 0.9em;
+    background-color: #f9fafa;
+    border: 1px solid #dde1e4;
+    border-radius: 3px;
+    padding: 0 3px;
 }
 
 .bitcoin-address {
-    margin: 10px;
-    color: #d8bd8a;
+    padding: 10px;
     font-size: 18px;
     font-family: 'Inconsolata', serif;
     text-align: center;
-    text-shadow: 0 1px 3px #753742;
+    color: #f9f4f5;
+    background-color: #555b6e;
+    border-bottom: 3px solid #90708c;
+    box-shadow: inset 0 4px 8px -4px rgba(0, 0, 0, 0.5),
+                inset 0 -4px 8px -4px rgba(0, 0, 0, 0.5);
 }
