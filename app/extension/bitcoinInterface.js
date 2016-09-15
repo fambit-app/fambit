@@ -10,7 +10,10 @@ function addDonation() {
         const unusedInputs = address.requestTransactionList()   //Get list of all unspent transactions associated with this address
             .map(output => ({ tx_hash: output.tx_hash, tx_index: output.tx_index, value: output.value }))
             .filter((output) => !transfer.inputs.some((input) => {  //Filter based on what ones are already in use for building the current transaction
-                input.index === output.tx_index && input.tx === output.tx_hash;
+                if (input.index === output.tx_index && input.tx === output.tx_hash) {
+                    return input;
+                }
+                return undefined;
             }));
 
 
@@ -20,7 +23,7 @@ function addDonation() {
             while (transfer.inputs.contains(unusedInputs[0])) unusedInputs.remove(0);
 
             const newInput = unusedInputs[0];
-            transfer.addInput( { tx: newInput.tx_hash, index: newInput.tx_index, value: newInput.value } );
+            transfer.addInput({ tx: newInput.tx_hash, index: newInput.tx_index, value: newInput.value });
         } while (!transfer.sufficientInput());
     }
 

@@ -64,7 +64,7 @@ class BitcoinTransfer {
         }
 
         //Send dust from previous transaction back to user's address
-        this.outputs.add( { recipient: this.myAddress, amount: this.currentInputValue } );
+        this.outputs.add({ recipient: this.myAddress, amount: this.currentInputValue });
 
         this.currentInputValue = input.value;
         this.inputs.add(input);
@@ -73,7 +73,7 @@ class BitcoinTransfer {
     addOutput(address) {
         const amount = this.currentInputValue - (this.currentInputValue * this.PERCENTAGE_CONSTANT);
         this.currentInputValue -= amount;
-        this.outputs.add( { recipient: address, amount: amount } );
+        this.outputs.add({ recipient: address, amount });
     }
 
     sufficientInput() {
