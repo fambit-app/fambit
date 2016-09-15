@@ -45,23 +45,6 @@ class BitcoinAddress {
 }
 
 
-class TransactionInput {
-    constructor(tx, index, value) {
-        this.tx = tx;
-        this.index = index;
-        this.value = value;
-    }
-}
-
-
-class TransactionOutput {
-    constructor(recipient, amount) {
-        this.recipient = recipient;
-        this.amount = amount;
-    }
-}
-
-
 //Instantiate BitcoinTransfer to begin building a list of inputs and outputs
 class BitcoinTransfer {
 
@@ -75,22 +58,22 @@ class BitcoinTransfer {
     }
 
     addInput(input) {
-        if (input.constructor !== TransactionInput) {
-            console.log('ERROR : input not of type TransactionInput');
+        if (!('tx' in input) || !('index' in input) || !('value' in input)) {
+            console.log('ERROR : input should be defined as {tx, index, value}');
             return;
         }
 
         //Send dust from previous transaction back to user's address
-        this.outputs.add(TransactionOutput(this.myAddress, this.currentInputValue));
+        this.outputs.add( { recipient: this.myAddress, amount: this.currentInputValue } );
 
         this.currentInputValue = input.value;
         this.inputs.add(input);
     }
 
     addOutput(address) {
-        const amount = this.currentInputValue - this.PERCENTAGE_CONSTANT;
+        const amount = this.currentInputValue - (this.currentInputValue * this.PERCENTAGE_CONSTANT);
         this.currentInputValue -= amount;
-        this.outputs.add(TransactionOutput(address, amount));
+        this.outputs.add( { recipient: address, amount: amount } );
     }
 
     sufficientInput() {
@@ -98,4 +81,4 @@ class BitcoinTransfer {
     }
 }
 
-module.exports = { BitcoinAddress, BitcoinTransfer, TransactionInput };
+module.exports = { BitcoinAddress, BitcoinTransfer };

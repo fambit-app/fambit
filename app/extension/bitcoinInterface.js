@@ -6,21 +6,21 @@ let transfer = new bitcoin.BitcoinTransfer(address);
 
 
 function addDonation() {
-    if (!transfer.sufficientInput()) {
-        const unusedInputs = address.requestTransactionList()
+    if (!transfer.sufficientInput()) {  //If current input isn't enough, attempt to add more before proceeding
+        const unusedInputs = address.requestTransactionList()   //Get list of all unspent transactions associated with this address
             .map(output => ({ tx_hash: output.tx_hash, tx_index: output.tx_index, value: output.value }))
-            .filter((output) => !transfer.inputs.some((input) => {
+            .filter((output) => !transfer.inputs.some((input) => {  //Filter based on what ones are already in use for building the current transaction
                 input.index === output.tx_index && input.tx === output.tx_hash;
             }));
 
 
         do {
-            if (unusedInputs.isEmpty) return false;
+            if (unusedInputs.length === 0) return false; //If we can't add enough input, return false (the current transaction should probably be sent)
 
             while (transfer.inputs.contains(unusedInputs[0])) unusedInputs.remove(0);
 
             const newInput = unusedInputs[0];
-            transfer.addInput(bitcoin.TransactionInput(newInput.tx_hash, newInput.tx_index, newInput.value));
+            transfer.addInput( { tx: newInput.tx_hash, index: newInput.tx_index, value: newInput.value } );
         } while (!transfer.sufficientInput());
     }
 
