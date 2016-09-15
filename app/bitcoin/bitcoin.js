@@ -1,10 +1,10 @@
 const bitcoin = require('bitcoinjs-lib');
 const BitcoinServerRequest = require('./servers');
+const serverRequests = new BitcoinServerRequest();
 
 class BitcoinAddress {
     constructor(persistence) {
         this.persistence = persistence;
-        this.serverRequests = new BitcoinServerRequest();
     }
 
     createAddress() {
@@ -31,7 +31,7 @@ class BitcoinAddress {
 
     checkBalance() {
         const address = this.persistence.getPublicKey();
-        return this.serverRequests.getBalance(address);
+        return serverRequests.getBalance(address);
     }
 }
 
@@ -59,4 +59,12 @@ class BitcoinTransfer {
     }
 }
 
-module.exports = { BitcoinAddress, BitcoinTransfer };
+/**
+ * Submits a transaction hash to the bitcoin server
+ * @param hash - the hash of the transaction
+ */
+function submitTransaction(hash) {
+    return serverRequests.submitTransaction(hash);
+}
+
+module.exports = { BitcoinAddress, BitcoinTransfer, submitTransaction };
