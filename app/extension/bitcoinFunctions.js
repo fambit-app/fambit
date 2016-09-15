@@ -56,3 +56,5 @@ function buildTransaction(from) {
 
     return transaction.build();
 }
+
+module.exports = { address, transfer, addDonation, buildTransaction };
