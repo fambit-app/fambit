@@ -17,6 +17,14 @@ class BitcoinAddress {
         return keyPair;
     }
 
+    getPublicKey() {
+        return this.persistence.getPublicKey();
+    }
+
+    getPrivateKey() {
+        return this.persistence.getPrivateKey();
+    }
+    
     getKeyPair() {
         return bitcoin.ECPair.fromWIF(this.persistence.getPrivateKey());
     }
