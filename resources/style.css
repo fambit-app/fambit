@@ -50,6 +50,7 @@ header {
 }
 
 .question {
+    position: relative;
     margin: 0 1px;
     font-size: 0.88em;
     background-color: #f9fafa;
@@ -57,6 +58,74 @@ header {
     border-radius: 3px;
     padding: 0 1px;
     cursor: pointer;
+}
+
+.tooltip {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    background: #fff;
+    top: -5px;
+    right: calc(100% + 10px);
+    width: 150px;
+    padding: 5px;
+    color: #555b6e;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    cursor: default;
+    border: 1px solid rgba(144, 112, 140, 0.7);
+    transition: visibility 0s ease 0.2s, opacity 0.2s ease;
+}
+
+.question:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.arrow-right {
+    position: absolute;
+    left: calc(100%);
+    top: 20%;
+}
+
+.top-mask {
+    overflow: hidden;
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    top: -13px;
+}
+
+.arrow-right-top {
+    position: absolute;
+    transform: skewX(45deg);
+    transform-origin: 0 0 0;
+    left: -5px;
+    top: 8px;
+    background-color: #fff;
+    width: 5px;
+    height: 5px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    border-right: 1px solid rgba(144, 112, 140, 1);
+}
+
+.bottom-mask {
+    overflow: hidden;
+    position: absolute;
+    width: 13px;
+    height: 13px;
+}
+
+.arrow-right-bottom {
+    position: absolute;
+    transform: skewX(-45deg);
+    transform-origin: 0 0 0;
+    right: 8px;
+    background-color: #fff;
+    width: 5px;
+    height: 5px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    border-right: 1px solid rgba(144, 112, 140, 1);
 }
 
 .bitcoin-address {
