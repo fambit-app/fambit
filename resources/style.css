@@ -85,7 +85,7 @@ header {
 .arrow-right {
     position: absolute;
     left: calc(100%);
-    top: 20%;
+    top: 10px;
 }
 
 .top-mask {
