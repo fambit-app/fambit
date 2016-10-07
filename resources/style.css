@@ -40,10 +40,13 @@ p {
     color: #777;
 }
 
-.small-divider {
-    margin: 0 30%;
-    height: 1px;
-    background-color: #90708c;
+.small-divider:after {
+    content: '';
+    display: block;
+    position: relative;
+    width: 40%;
+    left: 30%;
+    border-bottom: 1px solid #90708c;
 }
 
 .question {
@@ -105,21 +108,14 @@ p {
     font-size: 24px;
     background-color: #90708c;
     color: #f9f4f5;
-}
-
-.current-page {
-    box-shadow: inset 0 4px 8px -4px rgba(0, 0, 0, 0.5);
-    border-top: 3px solid #555b6e;
-}
-
-.history {
-    border-top: 3px solid #90708c;
+    padding-bottom: 7px; /* Counteracts 'Metropolis' font not seeming center-aligned */
 }
 
 .settings-cog {
     float: right;
     color: inherit;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .settings-cog:before {
@@ -127,5 +123,89 @@ p {
     content: "\e900";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 18px;
+    font-size: 0.8em;
+}
+
+.current-page {
+    box-shadow: inset 0 4px 8px -4px rgba(0, 0, 0, 0.5);
+    border-top: 3px solid #555b6e;
+}
+
+.deny-domain {
+    width: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    outline: none;
+    background-color: #C1BBC2;
+    color: #555b6e;
+    padding: 5px;
+    cursor: pointer;
+    border-bottom: 3px solid #90708c;
+
+    transition: background-color 0.2s ease;
+}
+
+.deny-domain:hover {
+    background-color: #555b6e;
+    color: #f9f4f5;
+}
+
+.deny-domain:active {
+    border-bottom: 3px solid #555b6e;
+}
+
+.history table {
+    width: 100%;
+    color: #555b6e;
+    border-collapse: collapse;
+}
+
+.history tr {
+    border-top: 1px solid #B6A1B2;
+}
+
+.history tr:hover {
+    background-color: #f4eff0;
+}
+
+.history td {
+    border-right: 1px solid #B6A1B2;
+    padding: 1px;
+    font-size: 1.1em;
+}
+
+.history td:first-child {
+    white-space: nowrap;
+}
+
+.history td:nth-child(2) {
+    font-weight: bold;
+    width: 100%;
+}
+
+.history td:last-child {
+    font-family: Inconsolata, monospace;
+    border-right: none;
+}
+
+section h3 {
+    font-family: Lato, sans-serif;
+    font-size: 1.5em;
+    padding: 5px;
+    margin-bottom: 10px;
+    color: #555b6e;
+    text-align: center;
+    font-weight: normal;
+}
+
+section h3:after {
+    content: '';
+    display: block;
+    position: relative;
+    width: calc(40% - 1px);
+    left: 30%;
+    top: 5px;
+    border-bottom: 1px dotted #90708c;
 }
