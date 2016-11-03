@@ -224,17 +224,22 @@ section h3 {
     justify-content: center;
 }
 
-.info div {
-    min-width: 45%;
+.info > div {
+    width: 45%;
     margin: 0 5px;
 
     display: flex;
     flex-direction: column;
     text-align: center;
     border: 1px solid #B6A1B2;
+    overflow: hidden;
 }
 
-.info span:first-child {
+.info > div:hover {
+    cursor: pointer;
+}
+
+.info-content {
     flex: 1 0 auto;
     padding: 7px 1px;
     display: flex;
@@ -248,21 +253,31 @@ section h3 {
     transition: color ease 0.3s
 }
 
-.info span:last-child {
-    flex: 0 0 auto;
-    padding: 1px;
-    background-color: #555b6e;
+.info > div:hover .info-content {
+    color: #8c2a2a;
+}
+
+.info-headers {
+    display: flex;
     color: #f4eff0;
     font-size: 1.1em;
     font-family: 'Lato', sans-serif;
+    white-space: nowrap;
+    width: 200%;
+    position: relative;
+    left: 0;
 
-    transition: background-color ease 0.3s
+    transition: left 0.3s ease,
+            background-color 0.3s ease;
+    background-color: #555b6e;
 }
 
-.info div:hover span:first-child {
-    color: #444;
+.info-headers span {
+    width: 50%;
+    padding: 1px;
 }
 
-.info div:hover span:last-child {
-    background-color: #444;
+.info > div:hover .info-headers {
+    left: -100%;
+    background-color: #8c2a2a;
 }
