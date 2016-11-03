@@ -129,6 +129,7 @@ p {
 .current-page {
     box-shadow: inset 0 4px 8px -4px rgba(0, 0, 0, 0.5);
     border-top: 3px solid #555b6e;
+    padding-bottom: 10px;
 }
 
 .deny-domain {
@@ -156,6 +157,11 @@ p {
     border-bottom: 3px solid #555b6e;
 }
 
+.history {
+    max-height: 250px;
+    overflow-y: scroll;
+}
+
 .history table {
     width: 100%;
     color: #555b6e;
@@ -170,13 +176,18 @@ p {
     background-color: #f4eff0;
 }
 
-.history td {
+.history th {
+    font-style: italic;
+}
+
+.history td, .history th {
     border-right: 1px solid #B6A1B2;
     padding: 1px;
     font-size: 1.1em;
+    text-align: left;
 }
 
-.history td:first-child {
+.history td:first-child, .history th:first-child {
     white-space: nowrap;
 }
 
@@ -188,24 +199,70 @@ p {
 .history td:last-child {
     font-family: Inconsolata, monospace;
     border-right: none;
+    text-align: right;
+}
+
+.history th:last-child {
+    border-right: none;
+}
+
+section:not(:first-child) {
+    border-top: 3px solid #555b6e;
 }
 
 section h3 {
     font-family: Lato, sans-serif;
     font-size: 1.5em;
     padding: 5px;
-    margin-bottom: 10px;
     color: #555b6e;
     text-align: center;
     font-weight: normal;
 }
 
-section h3:after {
-    content: '';
-    display: block;
-    position: relative;
-    width: calc(40% - 1px);
-    left: 30%;
-    top: 5px;
-    border-bottom: 1px dotted #90708c;
+.info {
+    display: flex;
+    justify-content: center;
+}
+
+.info div {
+    min-width: 45%;
+    margin: 0 5px;
+
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border: 1px solid #B6A1B2;
+}
+
+.info span:first-child {
+    flex: 1 0 auto;
+    padding: 7px 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #555b6e;
+
+    transition: color ease 0.3s
+}
+
+.info span:last-child {
+    flex: 0 0 auto;
+    padding: 1px;
+    background-color: #555b6e;
+    color: #f4eff0;
+    font-size: 1.1em;
+    font-family: 'Lato', sans-serif;
+
+    transition: background-color ease 0.3s
+}
+
+.info div:hover span:first-child {
+    color: #444;
+}
+
+.info div:hover span:last-child {
+    background-color: #444;
 }
