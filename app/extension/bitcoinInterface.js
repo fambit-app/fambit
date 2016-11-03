@@ -9,7 +9,7 @@ function addDonation() {
     if (!transfer.sufficientInput()) {  //If current input isn't enough, attempt to add more before proceeding
         const unusedInputs = address.requestTransactionList()   //Get list of all unspent transactions associated with this address
             .map(output => ({tx_hash: output.tx_hash, tx_index: output.tx_index, value: output.value}))
-            .filter((output) => !transfer.inputs.some((input) => {  //Filter based on what ones are already in use for building the current transaction
+            .filter((output) => !transfer.inputs.some((input) => {  //Filter based on what inputs are already in use for building the current transaction
                 if (input.index === output.tx_index && input.tx === output.tx_hash) {
                     return input;
                 }

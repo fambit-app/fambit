@@ -22,12 +22,12 @@ class BitcoinAddress {
     }
 
     requestBalance() {
-        const address = this.persistence.getPublicKey();
+        const address = this.getPublicKey();
         return this.serverRequests.getBalance(address);
     }
 
     requestTransactionList() {
-        const address = this.persistence.getPublicKey();
+        const address = this.getPublicKey();
         return this.serverRequests.getTransactionList(address);
     }
 
