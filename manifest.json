@@ -5,9 +5,9 @@
   "description": "WebExtension to microdonate to visited websites",
 
   "browser_action": {
-    "default_icon": "icon-32.png",
+    "default_icon": "needs-bc-32.png",
     "default_title": "Fambit",
-    "default_popup": "extension.html"
+    "default_popup": "needs-bc.html"
   },
 
   "applications": {
