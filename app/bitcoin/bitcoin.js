@@ -21,7 +21,7 @@ class BitcoinAddress {
         return this.persistence.getPublicKey();
     }
 
-    checkBalance() {
+    requestBalance() {
         const address = this.persistence.getPublicKey();
         return this.serverRequests.getBalance(address);
     }
@@ -64,16 +64,17 @@ class BitcoinTransfer {
         }
 
         //Send dust from previous transaction back to user's address
-        this.outputs.add({ recipient: this.myAddress, amount: this.currentInputValue });
+        this.outputs.add({recipient: this.myAddress, amount: this.currentInputValue});
 
         this.currentInputValue = input.value;
         this.inputs.add(input);
     }
 
     addOutput(address) {
+        //Get amount to add based on the percentage to add
         const amount = this.currentInputValue - (this.currentInputValue * this.PERCENTAGE_CONSTANT);
         this.currentInputValue -= amount;
-        this.outputs.add({ recipient: address, amount });
+        this.outputs.add({recipient: address, amount});
     }
 
     sufficientInput() {
@@ -81,4 +82,4 @@ class BitcoinTransfer {
     }
 }
 
-module.exports = { BitcoinAddress, BitcoinTransfer };
+module.exports = {BitcoinAddress, BitcoinTransfer};
