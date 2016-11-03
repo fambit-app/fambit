@@ -10,5 +10,5 @@ test('bitcoinjs-lib should generate the same public key from a given private key
     const keyPair = bitcoinAddress.createAddress();
     t.is(bitcoinAddress._hasBitcoinAddress(), true);
 
-    t.is(keyPair.getAddress(), bitcoinAddress.getKeyPair().getAddress());
+    t.is(keyPair.getAddress(), bitcoinAddress._getKeyPair().getAddress());
 });

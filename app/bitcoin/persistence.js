@@ -1,5 +1,6 @@
 const PRIVATE_KEY = 'fambit-private-key';
 const PUBLIC_KEY = 'fambit-public-key';
+const UNSPENT_TRANSACTIONS = 'fambit-unspent-transactions';
 
 class Persistence {
     constructor(save, retrieve) {
@@ -23,6 +24,18 @@ class Persistence {
 
     getPublicKey() {
         return this.retrieve(PUBLIC_KEY);
+    }
+
+    /**
+     * Stores a list of unspent transactions associated with the fambit user's address
+     * @param transactionList   - The transaction list in JSON format
+     */
+    setUnspentTransactions(transactionList) {
+        this.save(UNSPENT_TRANSACTIONS, transactionList);
+    }
+
+    getUnspentTransactions() {
+        return this.retrieve(UNSPENT_TRANSACTIONS);
     }
 }
 
