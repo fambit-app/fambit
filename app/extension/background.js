@@ -1,6 +1,7 @@
-const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 days
 const bitcoin = require('../bitcoin/bitcoin');
 const BitcoinPersistence = require('../bitcoin/persistence');
+
+const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 days
 const bitcoinPersistence = new BitcoinPersistence();
 const address = new bitcoin.BitcoinAddress(bitcoinPersistence);
 
@@ -37,5 +38,5 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
 
     console.log('Submitting transactions');
-    localStorage.setItem("bork", "alarm complete")
+    localStorage.setItem('bork', 'alarm complete');
 });

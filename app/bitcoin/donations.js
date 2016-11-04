@@ -1,8 +1,9 @@
-class Donations {
+const bitcoin = require('./bitcoin');
 
+class Donations {
     constructor(address) {
         this._address = address;
-        this._transfer = new bitcoin.BitcoinTransfer(this._address)
+        this._transfer = new bitcoin.BitcoinTransfer(this._address);
     }
 
     addDonation() {
@@ -34,9 +35,9 @@ class Donations {
 
     /**
      * Sends an amount of bitcoin to the destination wallet
-     * @param privateKey Private key of the sender's bitcoin wallet
+     * @param privateKeyWif Private key of the sender's bitcoin wallet
      */
-    buildTransaction(privateKey) {
+    buildTransaction(privateKeyWif) {
         const transaction = new bitcoin.TransactionBuilder();
 
         for (const input in this._transfer.inputs) {
@@ -53,7 +54,7 @@ class Donations {
 
         this._transfer = new bitcoin.BitcoinTransfer(this._address);    //Refresh transfer for next use, need to abstract this better
 
-        const privateKey = bitcoin.ECPair.fromWIF(privateKey);
+        const privateKey = bitcoin.ECPair.fromWIF(privateKeyWif);
         transaction.sign(0, privateKey);
 
         return transaction.build();

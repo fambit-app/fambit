@@ -4,7 +4,13 @@ const Persistence = require('../app/bitcoin/persistence.js');
 let storage = [];
 const persistence = new Persistence(
     (key, value) => storage[key] = value,
-    (key) => storage[key]
+    (key) => {
+        const value = storage[key];
+        if (value === undefined) {
+            return null; // to emulate localStorage returning null instead of undefined
+        }
+        return value;
+    }
 );
 persistence.reset = () => storage = [];
 
