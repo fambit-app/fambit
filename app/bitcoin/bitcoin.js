@@ -36,7 +36,7 @@ class BitcoinAddress {
     }
 
     _getKeyPair() {
-        return bitcoin.ECPair.fromWIF(this.persistence.getPrivateKey());
+        return bitcoin.ECPair.fromWIF(this.getPrivateKey());
     }
 
     _generateKeyPair() {
