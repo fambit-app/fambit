@@ -3,7 +3,7 @@ const BitcoinServerRequest = require('./servers');
 
 class BitcoinAddress {
     constructor(persistence) {
-        this.persistence = persistence;
+        this._persistence = persistence;
         this.serverRequests = new BitcoinServerRequest();
     }
 
@@ -12,13 +12,13 @@ class BitcoinAddress {
 
         const keyPair = this._generateKeyPair();
 
-        this.persistence.setAddress(keyPair);
+        this._persistence.setAddress(keyPair);
 
         return keyPair;
     }
 
     getPublicKey() {
-        return this.persistence.getPublicKey();
+        return this._persistence.getPublicKey();
     }
 
     requestBalance() {
@@ -32,7 +32,7 @@ class BitcoinAddress {
     }
 
     _getKeyPair() {
-        return bitcoin.ECPair.fromWIF(this.persistence.getPrivateKey());
+        return bitcoin.ECPair.fromWIF(this._persistence.getPrivateKey());
     }
 
     _generateKeyPair() {
@@ -40,7 +40,7 @@ class BitcoinAddress {
     }
 
     _hasBitcoinAddress() {
-        return this.persistence.hasBitcoinAddress();
+        return this._persistence.hasBitcoinAddress();
     }
 }
 

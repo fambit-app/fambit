@@ -28,7 +28,7 @@ gulp.task('js', function() {
    }
    
    compile('background');
-   compile('popup');   
+   compile('onboard-popup');
 });
 
 gulp.task('resources', function() {

@@ -7,7 +7,7 @@
   "browser_action": {
     "default_icon": "needs-bc-32.png",
     "default_title": "Fambit",
-    "default_popup": "main-popup.html"
+    "default_popup": "onboard-popup.html"
   },
 
   "applications": {
