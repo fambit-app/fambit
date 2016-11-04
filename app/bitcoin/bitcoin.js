@@ -22,7 +22,7 @@ class BitcoinAddress {
     }
 
     getPrivateKey() {
-        return this.persistence.getPrivateKey();
+        return this._persistence.getPrivateKey();
     }
 
     requestBalance() {
