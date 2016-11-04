@@ -23,6 +23,19 @@ class BitcoinServerRequests {
     }
 
     _getRequest(url) {
+        const promise = new Promise(
+            function (resolve, reject) {
+
+            }
+        );
+        promise.then(
+            function (val) {
+
+            }
+        ).catch(
+            
+        )
+        /*
         const request = new XMLHttpRequest();
         request.open('GET', url, true);
 
@@ -33,7 +46,7 @@ class BitcoinServerRequests {
         };
 
         request.timeout = 5000;
-        request.send();
+        request.send();*/
     }
 
     _postRequest(url, params) {
