@@ -17,7 +17,21 @@ class BitcoinAddress {
         return keyPair;
     }
 
-    getKeyPair() {
+    getPublicKey() {
+        return this.persistence.getPublicKey();
+    }
+
+    requestBalance() {
+        const address = this.getPublicKey();
+        return this.serverRequests.getBalance(address);
+    }
+
+    requestTransactionList() {
+        const address = this.getPublicKey();
+        return this.serverRequests.getTransactionList(address);
+    }
+
+    _getKeyPair() {
         return bitcoin.ECPair.fromWIF(this.persistence.getPrivateKey());
     }
 
@@ -35,27 +49,41 @@ class BitcoinAddress {
     }
 }
 
+
+//Instantiate BitcoinTransfer to begin building a list of inputs and outputs
 class BitcoinTransfer {
 
-    //TODO: Allow #buildTransaction() to take a list of sources
-    /**
-     * Sends an amount of bitcoin to the destination wallet
-     * @param sourcetx  - The transaction to use as a source for this transaction
-     * @param sourceIndex   - The index of the source output in its transaction
-     * @param to        - Public key of the recipient's bitcoin wallet
-     * @param from      - Private key of the sender's bitcoin wallet
-     * @param amount    - Amount of bitcoin to buildTransaction (in Satoshi)
-     */
-    static buildTransaction(sourcetx, sourceIndex, from, to, amount) {
-        const transaction = new bitcoin.TransactionBuilder();
+    constructor(myAddress) {
+        this.myAddress = myAddress;
+        this.inputs = [];
+        this.outputs = [];
+        this.currentInputValue = 0;
+        this.PERCENTAGE_CONSTANT = 0.2;
+        this.THRESHOLD = 0.000001;
+    }
 
-        transaction.addInput(sourcetx, sourceIndex);
-        transaction.addOutput(to, parseInt(amount));
+    addInput(input) {
+        if (!('tx' in input) || !('index' in input) || !('value' in input)) {
+            console.log('ERROR : input should be defined as {tx, index, value}');
+            return;
+        }
 
-        const privateKey = bitcoin.ECPair.fromWIF(from);
-        transaction.sign(0, privateKey);
+        //Send dust from previous transaction back to user's address
+        this.outputs.add({recipient: this.myAddress, amount: this.currentInputValue});
 
-        return transaction.build();
+        this.currentInputValue = input.value;
+        this.inputs.add(input);
+    }
+
+    addOutput(address) {
+        //Get amount to add based on the percentage to add
+        const amount = this.currentInputValue - (this.currentInputValue * this.PERCENTAGE_CONSTANT);
+        this.currentInputValue -= amount;
+        this.outputs.add({recipient: address, amount});
+    }
+
+    sufficientInput() {
+        return this.currentInputValue - (this.currentInputValue * this.PERCENTAGE_CONSTANT) >= this.THRESHOLD;
     }
 }
 
@@ -68,3 +96,4 @@ function submitTransaction(hash) {
 }
 
 module.exports = { BitcoinAddress, BitcoinTransfer, submitTransaction };
+module.exports = {BitcoinAddress, BitcoinTransfer};

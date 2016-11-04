@@ -6,7 +6,17 @@ class BitcoinServerRequests {
             const json = JSON.parse(response.body);
             return json.final_balance;
         }
+        return -1;
     }
+    getTransactionList(address) {
+        const response = this.makeRequest(`https://www.blockchain.info/unspent?active=${address}`);
+        if (response) {
+            const json = JSON.parse(response.body);
+            return json.unspent_outputs;
+        }
+        return [];
+    }
+
 
     submitTransaction(hash) {
         const response = this._postRequest('POST', `https://www.blockchain.info/pushtx`, `tx=${hash}`);
@@ -22,6 +32,7 @@ class BitcoinServerRequests {
             }
         };
 
+        request.timeout = 5000;
         request.send();
     }
 

@@ -52,10 +52,7 @@
       "consistent-return": 0,
       "func-names": 0,
       "linebreak-style": 0,
-      "max-len": [
-        "error",
-        120
-      ],
+      "max-len": 0,
       "no-continue": 0,
       "no-param-reassign": 0,
       "no-underscore-dangle": 0,
@@ -66,7 +63,9 @@
       "radix": 0,
       "new-cap": 0,
       "no-return-assign": 0,
-      "eol-last": 0
+      "eol-last": 0,
+      "object-curly-spacing": 0,
+      "no-restricted-syntax": 0
     },
     "globals": {
       "window": true,
