@@ -21,6 +21,10 @@ class BitcoinAddress {
         return this.persistence.getPublicKey();
     }
 
+    getPrivateKey() {
+        return this.persistence.getPrivateKey();
+    }
+
     requestBalance() {
         const address = this.getPublicKey();
         return this.serverRequests.getBalance(address);
@@ -32,7 +36,7 @@ class BitcoinAddress {
     }
 
     _getKeyPair() {
-        return bitcoin.ECPair.fromWIF(this.persistence.getPrivateKey());
+        return bitcoin.ECPair.fromWIF(this.getPrivateKey());
     }
 
     _generateKeyPair() {
