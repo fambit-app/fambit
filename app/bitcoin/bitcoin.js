@@ -1,5 +1,6 @@
 const bitcoin = require('bitcoinjs-lib');
 const BitcoinServerRequest = require('./servers');
+
 const serverRequests = new BitcoinServerRequest();
 
 class BitcoinAddress {
