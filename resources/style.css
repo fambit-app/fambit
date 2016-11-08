@@ -172,6 +172,16 @@ p {
     text-align: right;
 }
 
+#funded-ok {
+    cursor: pointer;
+    color: #555b6e;
+    text-decoration: underline;
+}
+
+#funded-ok:hover {
+    color: #7f879c;
+}
+
 .brand {
     font-family: 'Metropolis', sans-serif;
     font-size: 24px;
