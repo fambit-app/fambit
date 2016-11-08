@@ -5,6 +5,17 @@ const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 d
 const bitcoinPersistence = new BitcoinPersistence();
 const address = new bitcoin.BitcoinAddress(bitcoinPersistence);
 
+const onboardStatus = localStorage.getItem('onboard-status');
+if (onboardStatus === 'FIRST_FUNDED') {
+    chrome.browserAction.setPopup({
+        popup: 'funded-popup.html'
+    });
+} else if (onboardStatus === 'DONE') {
+    chrome.browserAction.setPopup({
+        popup: 'main-popup.html'
+    });
+}
+
 chrome.runtime.onMessage.addListener((request) => {
     if (request.action === 'PAGE_LOAD') {
         // Handle recipient from last page
@@ -26,7 +37,9 @@ chrome.runtime.onInstalled.addListener((details) => {
         return;
     }
 
+    // Installation initialization
     address.createAddress();
+    localStorage.setItem('onboard-status', 'NO_BITCOIN');
     chrome.alarms.create('SUBMIT_TRANSACTION', {
         periodInMinutes: TRANSACTION_DELAY_MINUTES
     });
@@ -38,5 +51,4 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
 
     console.log('Submitting transactions');
-    localStorage.setItem('bork', 'alarm complete');
 });
