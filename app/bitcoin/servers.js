@@ -1,67 +1,84 @@
 class BitcoinServerRequests {
 
     getBalance(address) {
-        const response = this._getRequest('GET', `https://www.blockchain.info/address/${address}?format=json`);
-        if (response) {
-            const json = JSON.parse(response.body);
-            return json.final_balance;
-        }
-        return -1;
+        const promise = this._getRequest('GET', `https://www.blockchain.info/address/${address}?format=json`);
+
+        promise.then(
+            function(val) {
+                const json = JSON.parse(val.body);
+                return json.final_balance;
+            }
+        )
+        .catch(
+            function () {
+                return -1;
+            }
+        );
     }
+
     getTransactionList(address) {
-        const response = this.makeRequest(`https://www.blockchain.info/unspent?active=${address}`);
-        if (response) {
-            const json = JSON.parse(response.body);
-            return json.unspent_outputs;
-        }
-        return [];
+        const promise = this._getRequest(`https://www.blockchain.info/unspent?active=${address}`);
+
+        promise.then(
+            function(val) {
+                const json = JSON.parse(val.body);
+                return json.unspent_outputs;
+            }
+        )
+        .catch(
+            function () {
+                return [];
+            }
+        );
     }
 
 
     submitTransaction(hash) {
-        const response = this._postRequest('POST', `https://www.blockchain.info/pushtx`, `tx=${hash}`);
+        this._postRequest('POST', `https://www.blockchain.info/pushtx`, `tx=${hash}`);
     }
 
     _getRequest(url) {
-        const promise = new Promise(
+        return new Promise(
             function (resolve, reject) {
+                const request = new XMLHttpRequest();
+                request.open('GET', url, true);
 
+                request.onreadystatechange = function() {
+                    if (request.readyState === 4 && request.status === 200) {
+                        resolve(request.responseText);
+                    }
+                    else if (request.readyState === 4 && request.status >= 400) {
+                        reject(request.responseText);
+                    }
+                };
+
+                request.timeout = 5000;
+                request.send();
             }
         );
-        promise.then(
-            function (val) {
-
-            }
-        ).catch(
-            
-        )
-        /*
-        const request = new XMLHttpRequest();
-        request.open('GET', url, true);
-
-        request.onreadystatechange = function() {
-            if (request.readyState === 4 && request.status === 400) {
-                return request.responseText;
-            }
-        };
-
-        request.timeout = 5000;
-        request.send();*/
     }
 
     _postRequest(url, params) {
-        const request = new XMLHttpRequest();
-        request.open('POST', url, true);
+        return new Promise(
+            function (resolve, reject) {
+                const request = new XMLHttpRequest();
+                request.open('POST', url, true);
 
-        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-        request.onreadystatechange = function() {
-            if(request.readyState === 4 && request.status === 400) {
-                return request.responseText;
+                request.onreadystatechange = function() {
+                    if(request.readyState === 4 && request.status === 200) {
+                        resolve(request.responseText);
+                    }
+                    else if(request.readyState === 4 && request.status >= 400) {
+                        reject(request.responseText);
+                    }
+                };
+
+                request.timeout = 5000;
+                request.send(params);
             }
-        };
-
-        request.send(params);
+        );
     }
 }
 
