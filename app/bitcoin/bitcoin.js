@@ -4,7 +4,8 @@ const serverRequests = new BitcoinServerRequest();
 
 class BitcoinAddress {
     constructor(persistence) {
-        this.persistence = persistence;
+        this._persistence = persistence;
+        this.serverRequests = new BitcoinServerRequest();
     }
 
     createAddress() {
@@ -12,17 +13,17 @@ class BitcoinAddress {
 
         const keyPair = this._generateKeyPair();
 
-        this.persistence.setAddress(keyPair);
+        this._persistence.setAddress(keyPair);
 
         return keyPair;
     }
 
     getPublicKey() {
-        return this.persistence.getPublicKey();
+        return this._persistence.getPublicKey();
     }
 
     getPrivateKey() {
-        return this.persistence.getPrivateKey();
+        return this._persistence.getPrivateKey();
     }
 
     requestBalance() {
@@ -44,7 +45,7 @@ class BitcoinAddress {
     }
 
     _hasBitcoinAddress() {
-        return this.persistence.hasBitcoinAddress();
+        return this._persistence.hasBitcoinAddress();
     }
 
     checkBalance() {
@@ -100,4 +101,3 @@ function submitTransaction(hash) {
 }
 
 module.exports = { BitcoinAddress, BitcoinTransfer, submitTransaction };
-module.exports = {BitcoinAddress, BitcoinTransfer};

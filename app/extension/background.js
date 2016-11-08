@@ -1,4 +1,9 @@
+const bitcoin = require('../bitcoin/bitcoin');
+const BitcoinPersistence = require('../bitcoin/persistence');
+
 const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 days
+const bitcoinPersistence = new BitcoinPersistence();
+const address = new bitcoin.BitcoinAddress(bitcoinPersistence);
 
 chrome.runtime.onMessage.addListener((request) => {
     if (request.action === 'PAGE_LOAD') {
@@ -21,6 +26,7 @@ chrome.runtime.onInstalled.addListener((details) => {
         return;
     }
 
+    address.createAddress();
     chrome.alarms.create('SUBMIT_TRANSACTION', {
         periodInMinutes: TRANSACTION_DELAY_MINUTES
     });
@@ -32,4 +38,5 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
 
     console.log('Submitting transactions');
+    localStorage.setItem('bork', 'alarm complete');
 });

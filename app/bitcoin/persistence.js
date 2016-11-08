@@ -4,13 +4,13 @@ const UNSPENT_TRANSACTIONS = 'fambit-unspent-transactions';
 
 class Persistence {
     constructor(save, retrieve) {
-        this.save = save;
-        this.retrieve = retrieve;
+        this.save = save || ((key, value) => localStorage.setItem(key, value));
+        this.retrieve = retrieve || ((key) => localStorage.getItem(key));
     }
 
     hasBitcoinAddress() {
-        return this.getPrivateKey() !== undefined &&
-            this.getPublicKey() !== undefined;
+        return this.getPrivateKey() !== null &&
+            this.getPublicKey() !== null;
     }
 
     setAddress(keyPair) {
