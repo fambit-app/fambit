@@ -6,7 +6,11 @@ const bitcoinPersistence = new BitcoinPersistence();
 const address = new bitcoin.BitcoinAddress(bitcoinPersistence);
 
 const onboardStatus = localStorage.getItem('onboard-status');
-if (onboardStatus === 'FIRST_FUNDED') {
+if (onboardStatus === 'ONBOARD') {
+    chrome.browserAction.setPopup({
+        popup: 'onboard-popup.html'
+    });
+} else if (onboardStatus === 'FUNDED') {
     chrome.browserAction.setPopup({
         popup: 'funded-popup.html'
     });
