@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         site.title = donation.site;
         site.appendChild(document.createTextNode(donation.site.split('/')[0]));
         const fund = document.createElement('td');
-        fund.appendChild(document.createTextNode('${donation.donation}BC'));
+        fund.appendChild(document.createTextNode(`${donation.donation}BC`));
         row.appendChild(date);
         row.appendChild(site);
         row.appendChild(fund);
