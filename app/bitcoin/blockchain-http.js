@@ -1,13 +1,9 @@
-class BitcoinServerRequests {
+class BlockchainHttp {
 
     getBalance(address) {
-        const promise = this._getRequest('GET', `https://www.blockchain.info/address/${address}?format=json`);
-
-        promise.then((val) => {
-            const json = JSON.parse(val.body);
-            return json.final_balance;
-        })
-        .catch(() => -1);
+        return this._getRequest('GET', `https://www.blockchain.info/q/addressbalance/${address}`)
+            .then((val) => parseInt(val.body))
+            .catch(() => -1);
     }
 
     getTransactionList(address) {
@@ -64,4 +60,4 @@ class BitcoinServerRequests {
     }
 }
 
-module.exports = BitcoinServerRequests;
+module.exports = BlockchainHttp;

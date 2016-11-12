@@ -1,5 +1,5 @@
 const bitcoin = require('./transfer');
-const ServerRequests = require('./blockchain-server');
+const ServerRequests = require('./blockchain-http');
 const server = new ServerRequests();
 
 class Donations {
