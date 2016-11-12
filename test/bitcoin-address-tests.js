@@ -1,6 +1,6 @@
 import test from 'ava';
 import MockStore from './mock-store';
-import BitcoinAddress from '../app/bitcoin/bitcoin-address';
+import BitcoinAddress from '../app/bitcoin/address';
 
 test('should generate new address', t => {
     const mock = new MockStore();

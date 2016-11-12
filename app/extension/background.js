@@ -1,9 +1,6 @@
-const bitcoin = require('../bitcoin/bitcoin-transfer');
-const BitcoinPersistence = require('../bitcoin/persistence');
+const address = require('../bitcoin/address');
 
 const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 days
-const bitcoinPersistence = new BitcoinPersistence();
-const address = new bitcoin.BitcoinAddress(bitcoinPersistence);
 
 const onboardStatus = localStorage.getItem('onboard-status');
 if (onboardStatus === 'ONBOARD') {
@@ -42,7 +39,7 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
 
     // Installation initialization
-    bitcoin.BitcoinAddress.generate(localStorage.setItem.bind(localStorage));
+    address.generate(localStorage.setItem.bind(localStorage));
     localStorage.setItem('onboard-status', 'NO_BITCOIN');
     chrome.alarms.create('SUBMIT_TRANSACTION', {
         periodInMinutes: TRANSACTION_DELAY_MINUTES
