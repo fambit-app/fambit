@@ -1,4 +1,4 @@
-const bitcoin = require('../bitcoin/bitcoin');
+const bitcoin = require('../bitcoin/bitcoin-transfer');
 const BitcoinPersistence = require('../bitcoin/persistence');
 
 const bitcoinPersistence = new BitcoinPersistence();

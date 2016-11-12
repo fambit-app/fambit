@@ -80,8 +80,7 @@
   },
   "ava": {
     "files": [
-      "test/*.js",
-      "!test/mock_persistence.js"
+      "test/*tests.js"
     ]
   }
 }

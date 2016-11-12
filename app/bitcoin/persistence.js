@@ -1,5 +1,3 @@
-const PRIVATE_KEY = 'fambit-private-key';
-const PUBLIC_KEY = 'fambit-public-key';
 const UNSPENT_TRANSACTIONS = 'fambit-unspent-transactions';
 
 class Persistence {

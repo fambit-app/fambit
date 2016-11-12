@@ -1,4 +1,4 @@
-const bitcoin = require('../bitcoin/bitcoin');
+const bitcoin = require('../bitcoin/bitcoin-transfer');
 const BitcoinPersistence = require('../bitcoin/persistence');
 
 const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 days
@@ -42,7 +42,7 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
 
     // Installation initialization
-    address.createAddress();
+    bitcoin.BitcoinAddress.generate(localStorage.setItem.bind(localStorage));
     localStorage.setItem('onboard-status', 'NO_BITCOIN');
     chrome.alarms.create('SUBMIT_TRANSACTION', {
         periodInMinutes: TRANSACTION_DELAY_MINUTES

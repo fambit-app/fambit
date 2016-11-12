@@ -1,22 +1,6 @@
 import test from 'ava';
-
-import PendingDonations from '../app/bitcoin/pending-donations'
-
-class MockStore {
-    constructor() {
-        this._data = {};
-        this.save = this.save.bind(this);
-        this.retrieve = this.retrieve.bind(this);
-    }
-
-    save(key, value) {
-        this._data[key] = value;
-    }
-
-    retrieve(key) {
-        return this._data[key] || null;
-    }
-}
+import MockStore from './mock-store';
+import PendingDonations from '../app/bitcoin/pending-donations';
 
 test('should not initially have any pending donations', t => {
     const mock = new MockStore();
