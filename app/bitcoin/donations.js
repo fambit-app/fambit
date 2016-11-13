@@ -1,5 +1,6 @@
 const bitcoinJS = require('bitcoinjs-lib');
 const BlockchainHttp = require('./blockchain-http');
+
 const http = new BlockchainHttp();
 
 class BitcoinTransfer {

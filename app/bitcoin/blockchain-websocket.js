@@ -7,7 +7,7 @@ class BlockchainWebsocket {
         this._ws.onmessage = (message) => {
             const data = JSON.parse(message.data);
             if (data.op === 'status') {
-                console.log("BlockchainWebsocket: " + data.msg);
+                console.log(`BlockchainWebsocket: ${data.msg}`);
             } else if (data.op === 'utx') {
                 this.lastBalance = blockchainHttp.getBalance(address);
                 this._listeners.forEach((onBalanceChanged) => onBalanceChanged(this.lastBalance));

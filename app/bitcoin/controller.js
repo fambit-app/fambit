@@ -6,7 +6,7 @@ const Address = require('./address');
 // What percentage of remaining funds to donate on-page-visit
 const PER_VISIT_DONATION = 0.0001;
 // Minimum amount to send in a multi-donation transaction. If too low, then the blockchain won't process the donations.
-const THRESHOLD = 0.000001;
+// const THRESHOLD = 0.000001; // unused currently
 // Minimum delay before cached information (e.g. balance) is updated from blockchain.info
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 
@@ -63,8 +63,8 @@ class LiveController {
 }
 
 /**
- * Gets bitcoin amount from LocalStorage with key "fake-amount".
- * Puts transactions into "fake-transactions"
+ * Gets bitcoin amount from LocalStorage with key 'fake-amount'.
+ * Puts transactions into 'fake-transactions'
  *
  * Used when LocalStorage has the key 'FAKE' with value 'TRUE'
  */
@@ -98,9 +98,9 @@ class FakeController {
 function build(save, retrieve) {
     if (retrieve('FAKE')) {
         return new FakeController(save, retrieve);
-    } else {
-        return new LiveController(save, retrieve);
     }
+
+    return new LiveController(save, retrieve);
 }
 
 module.exports = build;
