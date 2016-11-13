@@ -7,19 +7,20 @@ const controller = build(
     localStorage.getItem.bind(localStorage)
 );
 
-const onboardStatus = localStorage.getItem('onboard-status');
-if (onboardStatus === 'ONBOARD') {
-    chrome.browserAction.setPopup({
-        popup: 'onboard-popup.html'
-    });
-} else if (onboardStatus === 'FUNDED') {
-    chrome.browserAction.setPopup({
-        popup: 'funded-popup.html'
-    });
-} else if (onboardStatus === 'DONE') {
-    chrome.browserAction.setPopup({
-        popup: 'main-popup.html'
-    });
+function updatePopup(onboardStatus) {
+    if (onboardStatus === 'ONBOARD') {
+        chrome.browserAction.setPopup({
+            popup: 'onboard-popup.html'
+        });
+    } else if (onboardStatus === 'FUNDED') {
+        chrome.browserAction.setPopup({
+            popup: 'funded-popup.html'
+        });
+    } else if (onboardStatus === 'DONE') {
+        chrome.browserAction.setPopup({
+            popup: 'main-popup.html'
+        });
+    }
 }
 
 chrome.runtime.onMessage.addListener((request) => {
@@ -57,4 +58,16 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
 
     console.log('Submitting transactions');
+});
+
+updatePopup(localStorage.getItem('onboard-status'));
+controller.liveBalance((newBalance) => {
+    console.log('newBalance', newBalance);
+    if (newBalance > 0) {
+        localStorage.setItem('onboard-status', 'FUNDED');
+        updatePopup('FUNDED');
+        chrome.browserAction.setIcon({
+            path: 'icon-alert-16.png'
+        });
+    }
 });

@@ -29,7 +29,7 @@ class BlockchainWebsocket {
     }
 
     addListener(onBalanceChanged) {
-        this._listeners.add(onBalanceChanged);
+        this._listeners.push(onBalanceChanged);
         if (this.lastBalance !== undefined) {
             onBalanceChanged(this.lastBalance);
         }
