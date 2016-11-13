@@ -1,4 +1,4 @@
-const PENDING_KEY = 'PENDING_DONATIONS';
+const PENDING_KEY = 'pending-donations';
 
 class PendingDonations {
     constructor(save, retrieve) {

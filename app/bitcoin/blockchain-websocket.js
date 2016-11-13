@@ -14,10 +14,12 @@ class BlockchainWebsocket {
             }
         };
 
-        this._ws.send(JSON.stringify({
-            op: 'addr_sub',
-            addr: address
-        }));
+        this._ws.onopen = () => {
+            this._ws.send(JSON.stringify({
+                op: 'addr_sub',
+                addr: address
+            }));
+        };
 
         setInterval(() => {
             this._ws.send(JSON.stringify({
