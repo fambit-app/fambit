@@ -22,14 +22,10 @@ test('should store multiple donations', t => {
 test('should run donations through transaction on commit', t => {
     const mock = new MockStore();
     const pending = new PendingDonations(mock.save, mock.retrieve);
-    let result = undefined;
-    function transact(donations) {
-        result = donations;
-    }
 
     pending.queue("A", 1, new Date(0));
     pending.queue("B", 2, new Date(1));
-    pending.commit(transact);
+    const result = pending.commit();
 
     t.deepEqual(result, [
         {address: "A", amount: 1, date: new Date(0)},
@@ -43,7 +39,7 @@ test('should clear pending donations after transaction', t => {
 
     pending.queue("A", 1, new Date(0));
     pending.queue("B", 2, new Date(1));
-    pending.commit(() => undefined);
+    pending.commit();
 
     t.deepEqual(pending.list(), []);
 });

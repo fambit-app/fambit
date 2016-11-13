@@ -20,9 +20,10 @@ class PendingDonations {
         return this.retrieve(PENDING_KEY);
     }
 
-    commit(performTransaction) {
-        performTransaction(this.retrieve(PENDING_KEY));
+    commit() {
+        const transactions = this.retrieve(PENDING_KEY);
         this.save(PENDING_KEY, []);
+        return transactions;
     }
 }
 
