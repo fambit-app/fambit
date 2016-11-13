@@ -1,17 +1,18 @@
-const bitcoin = require('./transfer');
-const ServerRequests = require('./blockchain-http');
-const server = new ServerRequests();
+const bitcoinJS = require('bitcoinjs-lib');
+const BitcoinTransfer = require('./transfer');
+const BlockchainHttp = require('./blockchain-http');
+const http = new BlockchainHttp();
 
 class Donations {
     constructor(address) {
         this._address = address;
-        this._transfer = new bitcoin.BitcoinTransfer(this._address);
+        this._transfer = new BitcoinTransfer(this._address);
     }
 
     addDonation() {
         if (!this._transfer.sufficientInput()) {  //If current input isn't enough, attempt to add more before proceeding
             const address = this._address.getPublicKey();
-            const unusedInputs = server.getTransactionList(address)   //Get list of all unspent transactions associated with this address
+            const unusedInputs = http.getTransactionList(address)   //Get list of all unspent transactions associated with this address
                 .map(output => ({tx_hash: output.tx_hash, tx_index: output.tx_index, value: output.value}))
                 .filter((output) => !this._transfer.inputs.some((input) => {  //Filter based on what inputs are already in use for building the current transaction
                     if (input.index === output.tx_index && input.tx === output.tx_hash) {
@@ -41,7 +42,7 @@ class Donations {
      * @param privateKeyWif Private key of the sender's bitcoin wallet
      */
     buildTransaction(privateKeyWif) {
-        const transaction = new bitcoin.TransactionBuilder();
+        const transaction = new bitcoinJS.TransactionBuilder();
 
         for (const input in this._transfer.inputs) {
             if (!(input.tx === undefined) && !(input.index === undefined)) {
@@ -55,9 +56,9 @@ class Donations {
             }
         }
 
-        this._transfer = new bitcoin.BitcoinTransfer(this._address);    //Refresh transfer for next use, need to abstract this better
+        this._transfer = new BitcoinTransfer(this._address);    //Refresh transfer for next use, need to abstract this better
 
-        const privateKey = bitcoin.ECPair.fromWIF(privateKeyWif);
+        const privateKey = bitcoinJS.ECPair.fromWIF(privateKeyWif);
         transaction.sign(0, privateKey);
 
         return transaction.build();

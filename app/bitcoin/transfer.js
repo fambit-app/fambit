@@ -34,13 +34,4 @@ class BitcoinTransfer {
         return this.currentInputValue - (this.currentInputValue * this.PERCENTAGE_CONSTANT) >= this.THRESHOLD;
     }
 }
-
-/**
- * Submits a transaction hash to the bitcoin server
- * @param hash - the hash of the transaction
- */
-function submitTransaction(hash) {
-    return serverRequests.submitTransaction(hash);
-}
-
-module.exports = { BitcoinTransfer, submitTransaction };
+module.exports = BitcoinTransfer;
