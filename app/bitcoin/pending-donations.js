@@ -2,27 +2,27 @@ const PENDING_KEY = 'PENDING_DONATIONS';
 
 class PendingDonations {
     constructor(save, retrieve) {
-        this.save = save || ((key, value) => localStorage.setItem(key, value));
-        this.retrieve = retrieve || ((key) => localStorage.getItem(key));
+        this._save = save;
+        this._retrieve = retrieve;
 
-        if (this.retrieve(PENDING_KEY) === null) {
-            this.save(PENDING_KEY, []);
+        if (this._retrieve(PENDING_KEY) === null) {
+            this._save(PENDING_KEY, []);
         }
     }
 
     queue(address, amount, date) {
-        const donations = this.retrieve(PENDING_KEY);
+        const donations = this._retrieve(PENDING_KEY);
         donations.push({address, amount, date});
-        this.save(PENDING_KEY, donations);
+        this._save(PENDING_KEY, donations);
     }
 
     list() {
-        return this.retrieve(PENDING_KEY);
+        return this._retrieve(PENDING_KEY);
     }
 
     commit() {
-        const transactions = this.retrieve(PENDING_KEY);
-        this.save(PENDING_KEY, []);
+        const transactions = this._retrieve(PENDING_KEY);
+        this._save(PENDING_KEY, []);
         return transactions;
     }
 }

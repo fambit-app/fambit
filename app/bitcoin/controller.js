@@ -97,6 +97,7 @@ class FakeController {
 
 function build(save, retrieve) {
     if (retrieve('FAKE')) {
+        console.log('Using fake controller');
         return new FakeController(save, retrieve);
     }
 
