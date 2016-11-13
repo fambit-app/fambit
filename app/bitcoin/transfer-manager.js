@@ -39,7 +39,7 @@ class BitcoinTransfer {
     }
 }
 
-class Donations {
+class TransferManager {
     constructor(privateKey, publicKey) {
         this._privateKey = privateKey;
         this._publicKey = publicKey;
@@ -101,4 +101,4 @@ class Donations {
     }
 }
 
-module.exports = Donations;
+module.exports = TransferManager;
