@@ -89,9 +89,15 @@ class FakeController {
     }
 
     commitTransaction() {
-        const fakeTransactions = this._retrieve('fake-transactions');
+        let fakeTransactions = this._retrieve('fake-transactions');
+        if (fakeTransactions === null) {
+            fakeTransactions = {}
+        } else {
+            fakeTransactions = JSON.parse(fakeTransactions);
+        }
+
         fakeTransactions[Date.now()] = this._pending.commit();
-        this._save(fakeTransactions);
+        this._save(JSON.stringify(fakeTransactions));
     }
 }
 

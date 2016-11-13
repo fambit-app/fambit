@@ -6,23 +6,23 @@ class PendingDonations {
         this._retrieve = retrieve;
 
         if (this._retrieve(PENDING_KEY) === null) {
-            this._save(PENDING_KEY, []);
+            this._save(PENDING_KEY, '[]');
         }
     }
 
     queue(address, amount, date) {
-        const donations = this._retrieve(PENDING_KEY);
+        const donations = JSON.parse(this._retrieve(PENDING_KEY));
         donations.push({address, amount, date});
-        this._save(PENDING_KEY, donations);
+        this._save(PENDING_KEY, JSON.stringify(donations));
     }
 
     list() {
-        return this._retrieve(PENDING_KEY);
+        return JSON.parse(this._retrieve(PENDING_KEY));
     }
 
     commit() {
-        const transactions = this._retrieve(PENDING_KEY);
-        this._save(PENDING_KEY, []);
+        const transactions = JSON.parse(this._retrieve(PENDING_KEY));
+        this._save(PENDING_KEY, '[]');
         return transactions;
     }
 }
