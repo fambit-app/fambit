@@ -17,11 +17,13 @@ class PendingDonations {
     }
 
     list() {
-        return JSON.parse(this._retrieve(PENDING_KEY));
+        const donations = JSON.parse(this._retrieve(PENDING_KEY));
+        donations.forEach((donation) => donation.date = new Date(donation.date));
+        return donations;
     }
 
     commit() {
-        const transactions = JSON.parse(this._retrieve(PENDING_KEY));
+        const transactions = this.list();
         this._save(PENDING_KEY, '[]');
         return transactions;
     }
