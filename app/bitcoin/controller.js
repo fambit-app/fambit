@@ -91,7 +91,7 @@ class FakeController {
     commitTransaction() {
         let fakeTransactions = this._retrieve('fake-transactions');
         if (fakeTransactions === null) {
-            fakeTransactions = {}
+            fakeTransactions = {};
         } else {
             fakeTransactions = JSON.parse(fakeTransactions);
         }
