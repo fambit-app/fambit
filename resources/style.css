@@ -11,6 +11,12 @@
     font-style: normal;
 }
 @font-face {
+    font-family: 'Inconsolata';
+    src: url(font-inconsolata.ttf);
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
     font-family: 'icon';
     src: url(font-icons.woff);
     font-weight: normal;
