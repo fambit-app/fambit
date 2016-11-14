@@ -27,6 +27,10 @@ class LiveController {
         }
     }
 
+    publicKey() {
+        return this._address.publicKey;
+    }
+
     balance() {
         if (this._cachedBalance === undefined || Date.now() > new Date(this._cachedBalance.date.getTime() + CACHE_DURATION)) {
             const externalBalance = this._http.getBalance(this._address); // Balance as known by outside world
@@ -69,10 +73,16 @@ class LiveController {
  * Used when LocalStorage has the key 'FAKE' with value 'TRUE'
  */
 class FakeController {
-    constructor(save, retrieve) {
+    constructor(save, retrieve, addEventListener) {
         this._save = save;
         this._retrieve = retrieve;
+        this._addEventListener = addEventListener;
         this._pending = new PendingDonations(save, retrieve);
+        this._address = Address.fromStorage(retrieve);
+    }
+
+    publicKey() {
+        return this._address.publicKey;
     }
 
     balance() {
@@ -80,7 +90,13 @@ class FakeController {
     }
 
     liveBalance(onBalanceChange) {
-        onBalanceChange(this.balance());
+        this._addEventListener('storage', (e) => {
+            if (e.key !== 'fake-amount') {
+                return;
+            }
+
+            onBalanceChange(this.balance());
+        });
     }
 
     donate(recipient) {
@@ -91,7 +107,7 @@ class FakeController {
     commitTransaction() {
         let fakeTransactions = this._retrieve('fake-transactions');
         if (fakeTransactions === null) {
-            fakeTransactions = {}
+            fakeTransactions = {};
         } else {
             fakeTransactions = JSON.parse(fakeTransactions);
         }
@@ -102,9 +118,12 @@ class FakeController {
 }
 
 function build(save, retrieve) {
-    if (retrieve('FAKE')) {
+    save = save || localStorage.setItem.bind(localStorage);
+    retrieve = retrieve || localStorage.getItem.bind(localStorage);
+
+    if (retrieve('fake')) {
         console.log('Using fake controller');
-        return new FakeController(save, retrieve);
+        return new FakeController(save, retrieve, window.addEventListener.bind(window));
     }
 
     return new LiveController(save, retrieve);

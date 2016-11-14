@@ -1,11 +1,7 @@
 const address = require('../bitcoin/address');
-const build = require('../bitcoin/controller');
+const controller = require('../bitcoin/controller')();
 
 const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 days
-const controller = build(
-    localStorage.setItem.bind(localStorage),
-    localStorage.getItem.bind(localStorage)
-);
 
 function updatePopup(onboardStatus) {
     if (onboardStatus === 'ONBOARD') {
