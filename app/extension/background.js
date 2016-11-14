@@ -32,6 +32,12 @@ chrome.runtime.onMessage.addListener((request) => {
         if (request.recipient !== undefined) {
             localStorage.setItem('recipient', request.recipient);
         }
+    } else if (request.action === 'ONBOARD_COMPLETED') {
+        localStorage.setItem('onboard-status', 'DONE');
+        updatePopup('DONE');
+        chrome.browserAction.setIcon({
+            path: 'icon-16.png'
+        });
     }
 });
 
@@ -58,12 +64,16 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 
 updatePopup(localStorage.getItem('onboard-status'));
 controller.liveBalance((newBalance) => {
-    console.log('newBalance', newBalance);
-    if (newBalance > 0) {
-        localStorage.setItem('onboard-status', 'FUNDED');
-        updatePopup('FUNDED');
-        chrome.browserAction.setIcon({
-            path: 'icon-alert-16.png'
-        });
+    if (newBalance <= 0) {
+        return;
     }
+
+    localStorage.setItem('onboard-status', 'FUNDED');
+    updatePopup('FUNDED');
+    chrome.browserAction.setIcon({
+        path: 'icon-alert-16.png'
+    });
+    chrome.runtime.sendMessage({
+        action: 'RECEIVED_BITCOIN'
+    });
 });

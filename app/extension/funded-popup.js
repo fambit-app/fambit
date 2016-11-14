@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     amountElement.innerHTML = `${balance} mBTC`;
 
     document.getElementById('funded-ok').addEventListener('click', () => {
-        localStorage.setItem('onboard-status', 'DONE');
         window.location.href = 'main-popup.html';
+        chrome.runtime.sendMessage({
+            action: 'ONBOARD_COMPLETED'
+        });
     });
 });

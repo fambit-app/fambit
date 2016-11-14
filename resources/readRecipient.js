@@ -1,11 +1,12 @@
 window.onload = function() {
-    meta = document.querySelector('head meta[name="fambit-recipient"]');
-    const message = {
-        action: 'PAGE_LOAD'
-    };
+    const meta = document.querySelector('head meta[name="fambit-recipient"]');
 
-    if (meta !== null && meta.content !== undefined) {
-        message.recipient = meta.content;
+    if (meta === null || meta.content === undefined) {
+        return;
     }
-    chrome.runtime.sendMessage(message);
+
+    chrome.runtime.sendMessage({
+        action: 'PAGE_LOAD',
+        recipient: meta.content
+    });
 };
