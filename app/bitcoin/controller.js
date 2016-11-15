@@ -32,16 +32,19 @@ class LiveController {
     }
 
     balance() {
-        if (this._cachedBalance === undefined || Date.now() > new Date(this._cachedBalance.date.getTime() + CACHE_DURATION)) {
-            const externalBalance = this._http.getBalance(this._address); // Balance as known by outside world
+        if (this._cachedBalance !== undefined && Date.now() < new Date(this._cachedBalance.date.getTime() + CACHE_DURATION)) {
+            return Promise.resolve(this._cachedBalance.value);
+        }
+
+        return this._http.getBalance(this.publicKey()).then((externalBalance) => {
             const actualBalance = externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
 
             this._cachedBalance = {
                 date: Date.now(),
                 value: actualBalance
             };
-        }
-        return this._cachedBalance.value;
+            return actualBalance
+        });
     }
 
     liveBalance(onBalanceChange) {
@@ -58,7 +61,9 @@ class LiveController {
 
     donate(recipient) {
         const amount = this.balance() * PER_VISIT_DONATION;
-        this._pending.queue(recipient, amount, Date.now());
+        const date = Date.now();
+        this._pending.queue(recipient, amount, date);
+        return {recipient, amount, date}
     }
 
     commitTransaction() {
@@ -86,7 +91,9 @@ class FakeController {
     }
 
     balance() {
-        return this._retrieve('fake-amount') - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
+        const externalBalance = this._retrieve('fake-amount');
+        const pendingCost = this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
+        return Promise.resolve(externalBalance - pendingCost);
     }
 
     liveBalance(onBalanceChange) {
@@ -101,7 +108,9 @@ class FakeController {
 
     donate(recipient) {
         const amount = this.balance() * PER_VISIT_DONATION;
-        this._pending.queue(recipient, amount, Date.now());
+        const date = Date.now();
+        this._pending.queue(recipient, amount, date);
+        return {recipient, amount, date}
     }
 
     commitTransaction() {

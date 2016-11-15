@@ -1,4 +1,11 @@
+const controller = require('../bitcoin/controller')();
+
 document.addEventListener('DOMContentLoaded', () => {
+    controller.balance().then((balance) => {
+        const amountElement = document.getElementById('pool-amount');
+        amountElement.innerHTML = `${balance} mBTC`;
+    });
+
     const mockData = [{
         date: '2016-08-01',
         site: 'bustanut.xyz/index.html',

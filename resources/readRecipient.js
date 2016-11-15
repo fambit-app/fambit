@@ -1,12 +1,15 @@
-window.onload = function() {
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('what up')
     const meta = document.querySelector('head meta[name="fambit-recipient"]');
 
-    if (meta === null || meta.content === undefined) {
-        return;
+    let recipient = undefined;
+    if (meta !== null) {
+        recipient = meta.content;
     }
+    console.log('oy', recipient);
 
     chrome.runtime.sendMessage({
         action: 'PAGE_LOAD',
-        recipient: meta.content
+        recipient: recipient
     });
-};
+});
