@@ -8,13 +8,22 @@ function updatePopup(onboardStatus) {
         chrome.browserAction.setPopup({
             popup: 'onboard-popup.html'
         });
+        chrome.browserAction.setIcon({
+            path: 'icon-16.png'
+        });
     } else if (onboardStatus === 'FUNDED') {
         chrome.browserAction.setPopup({
             popup: 'funded-popup.html'
         });
+        chrome.browserAction.setIcon({
+            path: 'icon-alert-16.png'
+        });
     } else if (onboardStatus === 'DONE') {
         chrome.browserAction.setPopup({
             popup: 'main-popup.html'
+        });
+        chrome.browserAction.setIcon({
+            path: 'icon-16.png'
         });
     }
 }
@@ -26,9 +35,6 @@ function checkFunded(newBalance) {
 
     localStorage.setItem('onboard-status', 'FUNDED');
     updatePopup('FUNDED');
-    chrome.browserAction.setIcon({
-        path: 'icon-alert-16.png'
-    });
     chrome.runtime.sendMessage({
         action: 'RECEIVED_BITCOIN'
     });
@@ -67,8 +73,10 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     console.log('Submitting transactions');
 });
 
-updatePopup(localStorage.getItem('onboard-status'));
-controller.balance().then(checkFunded);
-controller.liveBalance((newBalance) => {
-    checkFunded(newBalance);
-});
+const onboardStatus = localStorage.getItem('onboard-status');
+if (onboardStatus !== null) { // Will be null if this is first install, and `onInstalled` hasn't been executed yet
+    updatePopup(localStorage.getItem('onboard-status'));
+    controller.liveBalance((newBalance) => {
+        checkFunded(newBalance);
+    });
+}

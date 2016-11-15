@@ -22,7 +22,7 @@ class LiveController {
         this._address = Address.fromStorage(retrieve);
         this._cachedBalance = undefined;
 
-        if (this._address === null) {
+        if (this._address === undefined) {
             console.error('LiveController: bitcoin address has not been generated yet!');
         }
     }
@@ -91,7 +91,7 @@ class FakeController {
     }
 
     balance() {
-        const externalBalance = this._retrieve('fake-amount');
+        const externalBalance = this._retrieve('fake-amount') || 0;
         const pendingCost = this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
         return Promise.resolve(externalBalance - pendingCost);
     }
@@ -102,7 +102,7 @@ class FakeController {
                 return;
             }
 
-            onBalanceChange(this.balance());
+            this.balance().then(onBalanceChange);
         });
     }
 

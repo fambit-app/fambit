@@ -6,8 +6,6 @@ const PUBLIC_KEY = 'public-key';
 function fromStorage(retrieve) {
     const privateKey = retrieve(PRIVATE_KEY);
     const publicKey = retrieve(PUBLIC_KEY);
-    console.log(privateKey, publicKey);
-    console.trace();
     if (!privateKey || !publicKey) {
         return undefined;
     }
