@@ -3,49 +3,41 @@ const controller = require('../bitcoin/controller')();
 document.addEventListener('DOMContentLoaded', () => {
     controller.balance().then((balance) => {
         const amountElement = document.getElementById('pool-amount');
-        amountElement.innerHTML = `${balance} mBTC`;
+        amountElement.innerHTML = `${Math.round(balance / 100)} μBTC`;
     });
 
-    const mockData = [{
-        date: '2016-08-01',
-        site: 'bustanut.xyz/index.html',
-        donation: 0.011
-    }, {
-        date: '2016-07-28',
-        site: 'fuzzlesoft.ca/phazeball2/A_0.3.2_2/index.html',
-        donation: 0.012
-    }, {
-        date: '2016-07-28',
-        site: 'fuzzlesoft.ca/phazeball2/index.html',
-        donation: 0.012
-    }, {
-        date: '2016-07-28',
-        site: 'fuzzlesoft.ca/projects.html',
-        donation: 0.012
-    }, {
-        date: '2016-07-28',
-        site: 'fuzzlesoft.ca/about.html',
-        donation: 0.012
-    }, {
-        date: '2016-07-28',
-        site: 'fuzzlesoft.ca/index.html',
-        donation: 0.012
-    }, {
-        date: '2016-07-26',
-        site: 'www.lukeatsea.com/dda2',
-        donation: 0.013
-    }];
+    const lastDonation = JSON.parse(localStorage.getItem('last-page-donation'));
+    const domainElement = document.getElementById('current-domain');
+    const donationElement = document.getElementById('current-donation');
+    domainElement.innerHTML = lastDonation.domain;
+    if (lastDonation.amount) {
+        donationElement.innerHTML = `${Math.round(lastDonation.amount)}sat.`;
+    } else {
+        donationElement.innerHTML = 'No bitcoin address';
+    }
 
     const historyTable = document.querySelector('.history tbody');
-    mockData.forEach((donation) => {
+    const history = JSON.parse(localStorage.getItem('page-donations') || '[]');
+    history.forEach((pageDonation) => {
+        pageDonation.date = new Date(pageDonation.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric'
+        });
+        if (pageDonation.amount) {
+            pageDonation.amount = `${Math.round(pageDonation.amount)}sat.`;
+        } else {
+            pageDonation.amount = 'none';
+        }
+
         const row = document.createElement('tr');
         const date = document.createElement('td');
-        date.appendChild(document.createTextNode(donation.date));
+        date.appendChild(document.createTextNode(pageDonation.date));
         const site = document.createElement('td');
-        site.title = donation.site;
-        site.appendChild(document.createTextNode(donation.site.split('/')[0]));
+        site.title = pageDonation.url;
+        site.appendChild(document.createTextNode(pageDonation.domain));
         const fund = document.createElement('td');
-        fund.appendChild(document.createTextNode(`${donation.donation}BC`));
+        fund.appendChild(document.createTextNode(`${pageDonation.amount}`));
         row.appendChild(date);
         row.appendChild(site);
         row.appendChild(fund);

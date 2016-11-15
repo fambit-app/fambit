@@ -42,7 +42,31 @@ function checkFunded(newBalance) {
 
 chrome.runtime.onMessage.addListener((request) => {
     if (request.action === 'PAGE_LOAD') {
-        console.log('donating to ' + request.recipient);
+        let promise;
+        if (request.recipient) {
+            promise = controller.donate(request.recipient);
+        } else {
+            promise = Promise.resolve();
+        }
+
+        promise.then((donation) => {
+            const pageDonation = {
+                url: request.url,
+                domain: request.domain,
+                date: Date.now()
+            };
+
+            if (donation) {
+                pageDonation.amount = donation.amount;
+                pageDonation.recipient = donation.recipient;
+                pageDonation.date = donation.date;
+            }
+
+            localStorage.setItem('last-page-donation', JSON.stringify(pageDonation));
+            const pageHistory = JSON.parse(localStorage.getItem('page-donations') || '[]');
+            pageHistory.push(pageDonation);
+            localStorage.setItem('page-donations', JSON.stringify(pageHistory));
+        });
     } else if (request.action === 'ONBOARD_COMPLETED') {
         localStorage.setItem('onboard-status', 'DONE');
         updatePopup('DONE');

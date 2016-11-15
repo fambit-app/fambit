@@ -43,7 +43,7 @@ class LiveController {
                 date: Date.now(),
                 value: actualBalance
             };
-            return actualBalance
+            return actualBalance;
         });
     }
 
@@ -63,7 +63,7 @@ class LiveController {
         const amount = this.balance() * PER_VISIT_DONATION;
         const date = Date.now();
         this._pending.queue(recipient, amount, date);
-        return {recipient, amount, date}
+        return {recipient, amount, date};
     }
 
     commitTransaction() {
@@ -107,10 +107,12 @@ class FakeController {
     }
 
     donate(recipient) {
-        const amount = this.balance() * PER_VISIT_DONATION;
-        const date = Date.now();
-        this._pending.queue(recipient, amount, date);
-        return {recipient, amount, date}
+        return this.balance().then((balance) => {
+            const amount = balance * PER_VISIT_DONATION;
+            const date = Date.now();
+            this._pending.queue(recipient, amount, date);
+            return {recipient, amount, date};
+        });
     }
 
     commitTransaction() {

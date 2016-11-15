@@ -3,7 +3,7 @@ const controller = require('../bitcoin/controller')();
 document.addEventListener('DOMContentLoaded', () => {
     controller.balance().then((balance) => {
         const amountElement = document.getElementById('pool-amount');
-        amountElement.innerHTML = `${balance} mBTC`;
+        amountElement.innerHTML = `${Math.round(balance / 100)} μBTC`;
     });
 
     document.getElementById('funded-ok').addEventListener('click', () => {
