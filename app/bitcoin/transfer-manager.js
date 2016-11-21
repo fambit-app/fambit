@@ -15,11 +15,6 @@ class BitcoinTransfer {
     }
 
     addInput(input) {
-        if (!('tx' in input) || !('index' in input) || !('value' in input)) {
-            console.log('ERROR : input should be defined as {tx, index, value}');
-            return;
-        }
-
         //Send dust from previous transaction back to user's address
         this.outputs.add({recipient: this.publicKey, amount: this.currentInputValue});
 

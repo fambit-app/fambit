@@ -22,22 +22,29 @@ class LiveController {
         this._address = Address.fromStorage(retrieve);
         this._cachedBalance = undefined;
 
-        if (this._address === null) {
+        if (this._address === undefined) {
             console.error('LiveController: bitcoin address has not been generated yet!');
         }
     }
 
+    publicKey() {
+        return this._address.publicKey;
+    }
+
     balance() {
-        if (this._cachedBalance === undefined || Date.now() > new Date(this._cachedBalance.date.getTime() + CACHE_DURATION)) {
-            const externalBalance = this._http.getBalance(this._address); // Balance as known by outside world
+        if (this._cachedBalance !== undefined && Date.now() < new Date(this._cachedBalance.date.getTime() + CACHE_DURATION)) {
+            return Promise.resolve(this._cachedBalance.value);
+        }
+
+        return this._http.getBalance(this.publicKey()).then((externalBalance) => {
             const actualBalance = externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
 
             this._cachedBalance = {
                 date: Date.now(),
                 value: actualBalance
             };
-        }
-        return this._cachedBalance.value;
+            return actualBalance;
+        });
     }
 
     liveBalance(onBalanceChange) {
@@ -54,7 +61,9 @@ class LiveController {
 
     donate(recipient) {
         const amount = this.balance() * PER_VISIT_DONATION;
-        this._pending.queue(recipient, amount, Date.now());
+        const date = Date.now();
+        this._pending.queue(recipient, amount, date);
+        return {recipient, amount, date};
     }
 
     commitTransaction() {
@@ -69,23 +78,41 @@ class LiveController {
  * Used when LocalStorage has the key 'FAKE' with value 'TRUE'
  */
 class FakeController {
-    constructor(save, retrieve) {
+    constructor(save, retrieve, addEventListener) {
         this._save = save;
         this._retrieve = retrieve;
+        this._addEventListener = addEventListener;
         this._pending = new PendingDonations(save, retrieve);
+        this._address = Address.fromStorage(retrieve);
+    }
+
+    publicKey() {
+        return this._address.publicKey;
     }
 
     balance() {
-        return this._retrieve('fake-amount') - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
+        const externalBalance = this._retrieve('fake-amount') || 0;
+        const pendingCost = this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
+        return Promise.resolve(externalBalance - pendingCost);
     }
 
     liveBalance(onBalanceChange) {
-        onBalanceChange(this.balance());
+        this._addEventListener('storage', (e) => {
+            if (e.key !== 'fake-amount') {
+                return;
+            }
+
+            this.balance().then(onBalanceChange);
+        });
     }
 
     donate(recipient) {
-        const amount = this.balance() * PER_VISIT_DONATION;
-        this._pending.queue(recipient, amount, Date.now());
+        return this.balance().then((balance) => {
+            const amount = balance * PER_VISIT_DONATION;
+            const date = Date.now();
+            this._pending.queue(recipient, amount, date);
+            return {recipient, amount, date};
+        });
     }
 
     commitTransaction() {
@@ -102,9 +129,12 @@ class FakeController {
 }
 
 function build(save, retrieve) {
-    if (retrieve('FAKE')) {
+    save = save || localStorage.setItem.bind(localStorage);
+    retrieve = retrieve || localStorage.getItem.bind(localStorage);
+
+    if (retrieve('fake')) {
         console.log('Using fake controller');
-        return new FakeController(save, retrieve);
+        return new FakeController(save, retrieve, window.addEventListener.bind(window));
     }
 
     return new LiveController(save, retrieve);

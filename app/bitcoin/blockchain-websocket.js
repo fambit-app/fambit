@@ -1,5 +1,5 @@
 class BlockchainWebsocket {
-    constructor(blockchainHttp, address) {
+    constructor(http, address) {
         this._ws = new WebSocket('wss://ws.blockchain.info/inv');
         this._listeners = [];
         this.lastBalance = undefined;
@@ -9,7 +9,7 @@ class BlockchainWebsocket {
             if (data.op === 'status') {
                 console.log(`BlockchainWebsocket: ${data.msg}`);
             } else if (data.op === 'utx') {
-                this.lastBalance = blockchainHttp.getBalance(address);
+                this.lastBalance = http.getBalance(address.publicKey);
                 this._listeners.forEach((onBalanceChanged) => onBalanceChanged(this.lastBalance));
             }
         };
@@ -29,7 +29,7 @@ class BlockchainWebsocket {
     }
 
     addListener(onBalanceChanged) {
-        this._listeners.add(onBalanceChanged);
+        this._listeners.push(onBalanceChanged);
         if (this.lastBalance !== undefined) {
             onBalanceChanged(this.lastBalance);
         }

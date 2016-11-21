@@ -5,7 +5,7 @@
   "description": "WebExtension to microdonate to visited websites",
 
   "browser_action": {
-    "default_icon": "icon-alert-16.png",
+    "default_icon": "icon-16.png",
     "default_title": "Fambit",
     "default_popup": "onboard-popup.html"
   },
@@ -24,7 +24,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["readRecipient.js"]
+      "js": ["readRecipient.js"],
+      "run_at": "document_end"
     }
   ],
 

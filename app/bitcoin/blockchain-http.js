@@ -1,24 +1,23 @@
 class BlockchainHttp {
 
     getBalance(address) {
-        return this._getRequest('GET', `https://www.blockchain.info/q/addressbalance/${address}`)
+        return this._getRequest(`https://blockchain.info/q/addressbalance/${address}`)
             .then((val) => parseInt(val.body))
             .catch(() => -1);
     }
 
     getTransactionList(address) {
-        const promise = this._getRequest(`https://www.blockchain.info/unspent?active=${address}`);
+        const promise = this._getRequest(`https://blockchain.info/unspent?active=${address}`);
 
         promise.then((val) => {
             const json = JSON.parse(val.body);
             return json.unspent_outputs;
-        })
-        .catch(() => []);
+        });
     }
 
 
     submitTransaction(hash) {
-        this._postRequest('https://www.blockchain.info/pushtx', `tx=${hash}`);
+        return this._postRequest('https://blockchain.info/pushtx', `tx=${hash}`);
     }
 
     _getRequest(url) {
