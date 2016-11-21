@@ -73,7 +73,8 @@
       "document": true,
       "XMLHttpRequest": true,
       "chrome": true,
-      "localStorage": true
+      "localStorage": true,
+      "WebSocket": true
     }
   },
   "dependencies": {
@@ -81,8 +82,7 @@
   },
   "ava": {
     "files": [
-      "test/*.js",
-      "!test/mock_persistence.js"
+      "test/*tests.js"
     ]
   }
 }
