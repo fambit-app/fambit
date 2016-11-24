@@ -21,10 +21,6 @@ class LiveController {
         this._ws = new BlockchainWs(this._http);
         this._address = Address.fromStorage(retrieve);
         this._cachedBalance = undefined;
-
-        if (this._address === undefined) {
-            console.error('LiveController: bitcoin address has not been generated yet!');
-        }
     }
 
     publicKey() {
@@ -131,6 +127,11 @@ class FakeController {
 function build(save, retrieve) {
     save = save || localStorage.setItem.bind(localStorage);
     retrieve = retrieve || localStorage.getItem.bind(localStorage);
+
+    const address = Address.fromStorage(retrieve);
+    if (address === undefined) {
+        Address.generate(save);
+    }
 
     if (retrieve('fake')) {
         console.log('Using fake controller');
