@@ -3,11 +3,10 @@
   "version": "0.1.0",
   "description": "WebExtension to microdonate to visited websites",
   "scripts": {
+    "dev": "webpack --watch",
     "test": "ava",
     "lint": "eslint ./app ./test",
-    "build": "gulp build",
-    "dev": "gulp dev",
-    "dist": "gulp clean dist"
+    "dist": "webpack"
   },
   "repository": {
     "type": "git",
@@ -28,17 +27,17 @@
     "url": "https://github.com/fambit-app/fambit/issues"
   },
   "homepage": "https://github.com/fambit-app/fambit#readme",
+  "dependencies": {
+    "bitcoinjs-lib": "^2.2.0"
+  },
   "devDependencies": {
     "ava": "^0.16.0",
-    "browserify": "^13.1.0",
-    "browserify-incremental": "^3.1.1",
-    "del": "^2.2.2",
+    "copy-webpack-plugin": "^4.0.1",
     "eslint": "^3.4.0",
     "eslint-config-airbnb-base": "^5.0.3",
     "eslint-plugin-import": "^1.14.0",
-    "event-stream": "^3.3.4",
-    "gulp": "^3.9.1",
-    "vinyl-source-stream": "^1.1.0"
+    "json-loader": "^0.5.4",
+    "webpack": "^2.1.0-beta.27"
   },
   "eslintConfig": {
     "extends": "airbnb-base",
@@ -77,9 +76,6 @@
       "localStorage": true,
       "WebSocket": true
     }
-  },
-  "dependencies": {
-    "bitcoinjs-lib": "^2.2.0"
   },
   "ava": {
     "files": [
