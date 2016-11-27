@@ -164,20 +164,23 @@ p {
     border-top: 3px solid #90708c;
     border-spacing: 0;
     background-color: #555b6e;
-    padding: 3px;
-}
-
-.amount td:first-child {
-    border-right: 1px dotted #90708c;
-    text-align: left;
-}
-
-.amount td {
-    padding: 2px;
+    padding: 5px;
     color: #f9f4f5;
     font-family: 'Inconsolata', serif;
     font-size: 1.5em;
+}
+
+.amount span > span:nth-child(2) {
+    border-left: 1px dotted #90708c;
+}
+
+.amount span > span {
+    padding: 2px;
     text-align: right;
+}
+
+.amount #bitcoin-address {
+    text-align: center;
 }
 
 .brand {
@@ -334,27 +337,38 @@ section h3 {
     color: #8c2a2a;
 }
 
-.info-headers {
-    display: flex;
+.info .slide-container {
     color: #f4eff0;
     font-size: 1.1em;
     font-family: 'Lato', sans-serif;
+    background-color: #555b6e;
+    transition: left 0.3s ease,
+    background-color 0.3s ease; /* can just background-color? */
+}
+
+.info .slide-container span {
+    padding: 1px;
+}
+
+.info div:hover > .slide-container {
+    background-color: #8c2a2a;
+}
+
+.slide-container {
+    display: flex;
+
     white-space: nowrap;
     width: 200%;
     position: relative;
     left: 0;
 
-    transition: left 0.3s ease,
-            background-color 0.3s ease;
-    background-color: #555b6e;
+    transition: left 0.3s ease;
 }
 
-.info-headers span {
+.slide-container > span {
     width: 50%;
-    padding: 1px;
 }
 
-.info > div:hover .info-headers {
+div:hover > .slide-container, .slide-container:hover {
     left: -100%;
-    background-color: #8c2a2a;
 }
