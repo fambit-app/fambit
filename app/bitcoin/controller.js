@@ -106,7 +106,7 @@ class FakeController {
 
                     lastBalance = currentBalance;
                     onBalanceChange(currentBalance);
-                })
+                });
             }, 1000);
         });
     }

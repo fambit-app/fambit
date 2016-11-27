@@ -8,9 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
         const history = JSON.parse(localStorage.getItem('page-donations') || '[]');
-        const currentDonation = history
-            .filter((donation) => donation.url === tabs[0].url)
-            [0] || history[0];
+        const currentDonation = history.filter((donation) => donation.url === tabs[0].url)[0] || history[0];
         // ^ Get the last donation with same url as current page. If none exists (e.g. Chrome newTab), just use
         // the last donation information
 

@@ -1,5 +1,5 @@
-const address = require('../bitcoin/address');
 const controller = require('../bitcoin/controller')();
+
 const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 days
 
 let runtime;
@@ -17,6 +17,18 @@ if (localStorage.getItem('onboard-status') === null) { // First install
 }
 
 function updatePopup(onboardStatus) {
+    function checkFunded(newBalance) {
+        if (newBalance <= 0 || localStorage.getItem('onboard-status') !== 'NO_BITCOIN') {
+            return;
+        }
+
+        localStorage.setItem('onboard-status', 'FUNDED');
+        updatePopup('FUNDED');
+        runtime.runtime.sendMessage({
+            action: 'RECEIVED_BITCOIN'
+        });
+    }
+
     if (onboardStatus === 'NO_BITCOIN') {
         runtime.browserAction.setPopup({
             popup: 'onboard-popup.html'
@@ -45,18 +57,6 @@ function updatePopup(onboardStatus) {
             path: 'icon-16.png'
         });
     }
-}
-
-function checkFunded(newBalance) {
-    if (newBalance <= 0 || localStorage.getItem('onboard-status') !== 'NO_BITCOIN') {
-        return;
-    }
-
-    localStorage.setItem('onboard-status', 'FUNDED');
-    updatePopup('FUNDED');
-    runtime.runtime.sendMessage({
-        action: 'RECEIVED_BITCOIN'
-    });
 }
 
 runtime.runtime.onMessage.addListener((request) => {

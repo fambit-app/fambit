@@ -73,6 +73,7 @@
       "document": true,
       "XMLHttpRequest": true,
       "chrome": true,
+      "browser": true,
       "localStorage": true,
       "WebSocket": true
     }
