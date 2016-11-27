@@ -51,6 +51,7 @@ p {
 
 .question {
     position: relative;
+    bottom: 1px;
     margin: 0 1px;
     font-size: 0.9em;
     background-color: #f9fafa;
@@ -67,7 +68,7 @@ p {
     background: #fff;
     top: -0.5em;
     right: calc(100% + 0.8em);
-    width: 155px;
+    width: 160px;
     padding: 5px;
     color: #555b6e;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
