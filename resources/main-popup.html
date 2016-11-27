@@ -13,14 +13,14 @@
         <div class="info">
             <div class="domain">
                 <span class="info-content" id="current-domain">...</span>
-                <div class="info-headers">
+                <div class="slide-container">
                     <span>Current Domain</span>
                     <span>Ban Donations to Domain</span>
                 </div>
             </div>
             <div class="pending-donation" title="pending until next page visit">
                 <span class="info-content" id="current-donation">...</span>
-                <div class="info-headers">
+                <div class="slide-container">
                     <span>Pending Donation</span>
                     <span>Cancel this donation</span>
                 </div>
@@ -33,11 +33,9 @@
             <tr><th>Date</th><th>Site</th><th>Donation</th></tr>
         </table>
     </section>
-    <table class="amount">
-        <tr>
-            <td>Pool:</td>
-            <td id="pool-amount">... μBTC</td>
-        </tr>
-    </table>
+    <div class="amount slide-container">
+        <span><span>Pool:</span><span id="pool-amount">... μBTC</span></span>
+        <span id="bitcoin-address">...</span>
+    </div>
 </body>
 </html>

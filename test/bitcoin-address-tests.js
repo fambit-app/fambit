@@ -21,7 +21,7 @@ test('should return both keys on generate and fromStorage', t => {
     const fromStorageAddress = BitcoinAddress.fromStorage(mock.retrieve);
 
     t.is(generatedAddress.privateKey.length, 52);
-    t.is(generatedAddress.publicKey.length, 34);
+    t.truthy(generatedAddress.publicKey.length >= 26 && generatedAddress.publicKey.length <= 35);
     t.is(generatedAddress.privateKey, fromStorageAddress.privateKey);
     t.is(generatedAddress.publicKey, fromStorageAddress.publicKey);
 });
