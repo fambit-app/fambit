@@ -8,7 +8,6 @@ class BlockchainHttp {
     getBalance(address) {
         return this._getRequest(`https://blockchain.info/q/addressbalance/${address}`)
             .then((val) => parseInt(val) / 100000)
-            .catch(() => -1);
     }
 
     getTransactionList(address) {
@@ -31,10 +30,12 @@ class BlockchainHttp {
             request.open('GET', url, true);
 
             request.onreadystatechange = function () {
-                if (request.readyState === 4 && request.status === 200) {
-                    resolve(request.responseText);
-                } else if (request.readyState === 4 && request.status >= 400) {
-                    reject(request.responseText);
+                if (request.readyState === 4) {
+                    if (request.status === 200) {
+                        resolve(request.responseText);
+                    } else {
+                        reject({status: request.status, data: request.responseText});
+                    }
                 }
             };
 
