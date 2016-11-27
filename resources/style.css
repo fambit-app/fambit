@@ -149,6 +149,14 @@ p {
     border-right: 1px solid rgba(144, 112, 140, 1);
 }
 
+.funded-thanks:after {
+    font-family: 'icon', monospace;
+    content: "\f209";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin-left: 0.2em;
+}
+
 .highlight {
     margin: 0 1px;
     font-size: 0.9em;
@@ -165,7 +173,6 @@ p {
     text-align: center;
     color: #f9f4f5;
     background-color: #555b6e;
-    border-bottom: 3px solid #90708c;
     border-top: 3px solid #90708c;
     box-shadow: inset 0 4px 8px -4px rgba(0, 0, 0, 0.5),
                 inset 0 -4px 8px -4px rgba(0, 0, 0, 0.5);
