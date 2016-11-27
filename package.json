@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "WebExtension to microdonate to visited websites",
   "scripts": {
-    "start": "webpack --watch",
+    "dev": "webpack --watch",
     "test": "ava",
     "lint": "eslint ./app ./test",
     "dist": "webpack"
