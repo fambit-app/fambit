@@ -51,12 +51,12 @@ p {
 
 .question {
     position: relative;
-    margin: 0 3px;
+    margin: 0 1px;
     font-size: 0.9em;
     background-color: #f9fafa;
     border: 1px solid #B5A0B2;
     border-radius: 3px;
-    padding: 0 1px;
+    padding: 0 3px;
     cursor: pointer;
 }
 
