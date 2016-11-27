@@ -2,7 +2,7 @@ class BlockchainHttp {
 
     getBalance(address) {
         return this._getRequest(`https://blockchain.info/q/addressbalance/${address}`)
-            .then((val) => parseInt(val.body))
+            .then((val) => parseInt(val))
             .catch(() => -1);
     }
 

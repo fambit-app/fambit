@@ -6,10 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         amountElement.innerHTML = `${Math.round(balance / 100)} μBTC`;
     });
 
-    document.getElementById('funded-ok').addEventListener('click', () => {
-        window.location.href = 'main-popup.html';
-        chrome.runtime.sendMessage({
-            action: 'ONBOARD_COMPLETED'
-        });
+    chrome.runtime.sendMessage({
+        action: 'FUNDED_POPUP_VIEWED'
     });
 });
