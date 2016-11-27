@@ -51,6 +51,7 @@ p {
 
 .question {
     position: relative;
+    bottom: 1px;
     margin: 0 1px;
     font-size: 0.9em;
     background-color: #f9fafa;
