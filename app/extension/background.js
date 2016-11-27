@@ -37,8 +37,7 @@ function updatePopup(onboardStatus) {
             path: {
                 '16': 'icon-16.png',
                 '19': 'icon-19.png',
-                '24': 'icon-24.png',
-                '38': 'icon-38.png'
+                '24': 'icon-24.png'
             }
         });
 
@@ -55,8 +54,7 @@ function updatePopup(onboardStatus) {
             path: {
                 '16': 'icon-alert-16.png',
                 '19': 'icon-alert-19.png',
-                '24': 'icon-alert-24.png',
-                '38': 'icon-alert-38.png'
+                '24': 'icon-alert-24.png'
             }
         });
     } else if (onboardStatus === 'DONE') {
@@ -67,8 +65,7 @@ function updatePopup(onboardStatus) {
             path: {
                 '16': 'icon-16.png',
                 '19': 'icon-19.png',
-                '24': 'icon-24.png',
-                '38': 'icon-38.png'
+                '24': 'icon-24.png'
             }
         });
     }
@@ -116,8 +113,7 @@ runtime.runtime.onMessage.addListener((request) => {
             path: {
                 '16': 'icon-16.png',
                 '19': 'icon-19.png',
-                '24': 'icon-24.png',
-                '38': 'icon-38.png'
+                '24': 'icon-24.png'
             }
         });
 

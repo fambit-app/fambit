@@ -8,8 +8,7 @@
     "default_icon": {
       "16": "icon-16.png",
       "19": "icon-19.png",
-      "24": "icon-24.png",
-      "38": "icon-38.png"
+      "24": "icon-24.png"
     },
     "default_title": "Fambit",
     "default_popup": "onboard-popup.html"
@@ -17,8 +16,8 @@
   
   "icons": {
     "16": "icon-16.png",
-    "48": "icon-48.png",
-    "128": "icon-128.png"
+    "36": "icon-36.png",
+    "48": "icon-48.png"
   },
 
   "applications": {
