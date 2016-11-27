@@ -1,8 +1,13 @@
 class BlockchainHttp {
 
+    /**
+     * Returns the balance of the wallet in milli-bitcoin
+     * @param address bitcoin address to check balance for
+     * @return {Promise.<number>}
+     */
     getBalance(address) {
         return this._getRequest(`https://blockchain.info/q/addressbalance/${address}`)
-            .then((val) => parseInt(val))
+            .then((val) => parseInt(val) / 100000)
             .catch(() => -1);
     }
 

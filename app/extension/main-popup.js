@@ -1,9 +1,10 @@
 const controller = require('../bitcoin/controller')();
+const filter = require('./bitcoin-filter');
 
 document.addEventListener('DOMContentLoaded', () => {
     controller.balance().then((balance) => {
         const amountElement = document.getElementById('pool-amount');
-        amountElement.innerHTML = `${Math.round(balance / 100)} μBTC`;
+        amountElement.innerHTML = filter(balance);
     });
 
     chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const donationElement = document.getElementById('current-donation');
         domainElement.innerHTML = currentDonation.domain;
         if (currentDonation.amount) {
-            donationElement.innerHTML = `${Math.round(currentDonation.amount)}sat.`;
+            donationElement.innerHTML = filter(currentDonation.amount);
         } else {
             donationElement.innerHTML = 'No bitcoin address';
         }
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 day: 'numeric'
             });
             if (pageDonation.amount) {
-                pageDonation.amount = `${Math.round(pageDonation.amount)}sat.`;
+                pageDonation.amount = filter(pageDonation.amount);
             } else {
                 pageDonation.amount = 'none';
             }
@@ -41,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             site.title = pageDonation.url;
             site.appendChild(document.createTextNode(pageDonation.domain));
             const fund = document.createElement('td');
-            fund.appendChild(document.createTextNode(`${pageDonation.amount}`));
+            fund.appendChild(document.createTextNode(pageDonation.amount));
             row.appendChild(date);
             row.appendChild(site);
             row.appendChild(fund);
