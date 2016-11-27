@@ -34,7 +34,11 @@ function updatePopup(onboardStatus) {
             popup: 'onboard-popup.html'
         });
         runtime.browserAction.setIcon({
-            path: 'icon-16.png'
+            path: {
+                '16': 'icon-16.png',
+                '19': 'icon-19.png',
+                '24': 'icon-24.png'
+            }
         });
 
         controller.balance().then(checkFunded);
@@ -47,14 +51,22 @@ function updatePopup(onboardStatus) {
             popup: 'funded-popup.html'
         });
         runtime.browserAction.setIcon({
-            path: 'icon-alert-16.png'
+            path: {
+                '16': 'icon-alert-16.png',
+                '19': 'icon-alert-19.png',
+                '24': 'icon-alert-24.png'
+            }
         });
     } else if (onboardStatus === 'DONE') {
         runtime.browserAction.setPopup({
             popup: 'main-popup.html'
         });
         runtime.browserAction.setIcon({
-            path: 'icon-16.png'
+            path: {
+                '16': 'icon-16.png',
+                '19': 'icon-19.png',
+                '24': 'icon-24.png'
+            }
         });
     }
 }
@@ -98,7 +110,11 @@ runtime.runtime.onMessage.addListener((request) => {
     } else if (request.action === 'FUNDED_POPUP_VIEWED') {
         localStorage.setItem('viewed-funded-popup', true);
         runtime.browserAction.setIcon({
-            path: 'icon-16.png'
+            path: {
+                '16': 'icon-16.png',
+                '19': 'icon-19.png',
+                '24': 'icon-24.png'
+            }
         });
 
         if (localStorage.getItem('page-donations') !== null) {
