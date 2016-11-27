@@ -10,8 +10,8 @@ module.exports = function filter(milliBitcoins) {
     } else if (milliBitcoins < 10) {
         return `${(milliBitcoins).toFixed(digits)} mBTC`;
     } else if (milliBitcoins < 10000) {
-        return `${(milliBitcoins / 1000).toFixed(digits)} BTC`
+        return `${(milliBitcoins / 1000).toFixed(digits)} BTC`;
     } else if (milliBitcoins < 10000000) {
-        return `${(milliBitcoins / 1000000).toFixed(digits)} kBTC`
+        return `${(milliBitcoins / 1000000).toFixed(digits)} kBTC`;
     }
 };
