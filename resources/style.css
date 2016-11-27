@@ -1,38 +1,27 @@
 @font-face {
     font-family: 'Lato';
     src: url(font-lato.woff2);
-    font-style: normal;
-    font-weight: normal;
 }
 @font-face {
     font-family: 'Metropolis';
     src: url(font-metropolis.otf);
-    font-weight: normal;
-    font-style: normal;
 }
 @font-face {
     font-family: 'Inconsolata';
     src: url(font-inconsolata.ttf);
-    font-weight: normal;
-    font-style: normal;
 }
 @font-face {
     font-family: 'DejaVu Sans';
     src: url(font-dejavusans.ttf);
-    font-weight: normal;
-    font-style: normal;
 }
 @font-face {
     font-family: 'DejaVu Sans';
     src: url(font-dejavusansbold.ttf);
     font-weight: bold;
-    font-style: normal;
 }
 @font-face {
     font-family: 'icon';
     src: url(font-icons.woff);
-    font-weight: normal;
-    font-style: normal;
 }
 
 * {
@@ -154,7 +143,7 @@ p {
     content: "\f209";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    margin-left: 0.2em;
+    margin-left: 0.25em;
 }
 
 .highlight {
