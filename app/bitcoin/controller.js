@@ -78,10 +78,9 @@ class LiveController {
  * Used when LocalStorage has the key 'FAKE' with value 'TRUE'
  */
 class FakeController {
-    constructor(save, retrieve, addEventListener) {
+    constructor(save, retrieve) {
         this._save = save;
         this._retrieve = retrieve;
-        this._addEventListener = addEventListener;
         this._pending = new PendingDonations(save, retrieve);
         this._address = Address.fromStorage(retrieve);
     }
@@ -97,12 +96,18 @@ class FakeController {
     }
 
     liveBalance(onBalanceChange) {
-        this._addEventListener('storage', (e) => {
-            if (e.key !== 'fake-amount') {
-                return;
-            }
+        this.balance().then((startBalance) => {
+            let lastBalance = startBalance;
+            setInterval(() => {
+                this.balance().then((currentBalance) => {
+                    if (lastBalance === currentBalance) {
+                        return;
+                    }
 
-            this.balance().then(onBalanceChange);
+                    lastBalance = currentBalance;
+                    onBalanceChange(currentBalance);
+                })
+            }, 1000);
         });
     }
 
@@ -132,9 +137,13 @@ function build(save, retrieve) {
     save = save || localStorage.setItem.bind(localStorage);
     retrieve = retrieve || localStorage.getItem.bind(localStorage);
 
+    if (!Address.fromStorage(retrieve)) {
+        Address.generate(save);
+    }
+
     if (retrieve('fake')) {
         console.log('Using fake controller');
-        return new FakeController(save, retrieve, window.addEventListener.bind(window));
+        return new FakeController(save, retrieve);
     }
 
     return new LiveController(save, retrieve);

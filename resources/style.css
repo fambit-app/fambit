@@ -17,6 +17,18 @@
     font-style: normal;
 }
 @font-face {
+    font-family: 'DejaVu Sans';
+    src: url(font-dejavusans.ttf);
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'DejaVu Sans';
+    src: url(font-dejavusansbold.ttf);
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
     font-family: 'icon';
     src: url(font-icons.woff);
     font-weight: normal;
@@ -31,6 +43,9 @@
 body {
     width: 400px;
     background-color: #f9f4f5;
+    font-family: "DejaVu Sans", serif;
+    font-weight: normal;
+    font-size: 75%;
 }
 
 header {
@@ -58,7 +73,7 @@ p {
 .question {
     position: relative;
     margin: 0 1px;
-    font-size: 0.88em;
+    font-size: 0.9em;
     background-color: #f9fafa;
     border: 1px solid #B5A0B2;
     border-radius: 3px;
@@ -71,9 +86,9 @@ p {
     visibility: hidden;
     position: absolute;
     background: #fff;
-    top: -5px;
-    right: calc(100% + 10px);
-    width: 150px;
+    top: -0.5em;
+    right: calc(100% + 0.8em);
+    width: 155px;
     padding: 5px;
     color: #555b6e;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
@@ -145,7 +160,7 @@ p {
 
 .bitcoin-address {
     padding: 10px;
-    font-size: 18px;
+    font-size: 1.5em;
     font-family: 'Inconsolata', serif;
     text-align: center;
     color: #f9f4f5;
@@ -174,26 +189,16 @@ p {
     padding: 2px;
     color: #f9f4f5;
     font-family: 'Inconsolata', serif;
-    font-size: 18px;
+    font-size: 1.5em;
     text-align: right;
-}
-
-#funded-ok {
-    cursor: pointer;
-    color: #555b6e;
-    text-decoration: underline;
-}
-
-#funded-ok:hover {
-    color: #7f879c;
 }
 
 .brand {
     font-family: 'Metropolis', sans-serif;
-    font-size: 24px;
+    font-size: 2em;
     background-color: #90708c;
     color: #f9f4f5;
-    padding-bottom: 7px; /* Counteracts 'Metropolis' font not seeming center-aligned */
+    padding-bottom: 0.3em; /* Counteracts 'Metropolis' font not seeming center-aligned */
 }
 
 .settings-cog {
@@ -243,7 +248,7 @@ p {
 }
 
 .history {
-    max-height: 250px;
+    max-height: 20em;
     overflow-y: scroll;
 }
 
@@ -277,7 +282,7 @@ p {
 }
 
 .history td:nth-child(2) {
-    font-weight: bold;
+    font-weight: bolder;
     width: 100%;
 }
 
