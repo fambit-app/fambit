@@ -4,7 +4,7 @@
   "description": "WebExtension to microdonate to visited websites",
   "scripts": {
     "dev": "webpack --watch",
-    "test": "ava",
+    "test": "ava --tap",
     "lint": "eslint ./app ./test",
     "dist": "webpack"
   },

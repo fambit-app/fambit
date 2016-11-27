@@ -31,6 +31,10 @@ class LiveController {
         return this._address.publicKey;
     }
 
+    /**
+     * Returns the balance in milli-bitcoins
+     * @return {*}
+     */
     balance() {
         if (this._cachedBalance !== undefined && Date.now() < new Date(this._cachedBalance.date.getTime() + CACHE_DURATION)) {
             return Promise.resolve(this._cachedBalance.value);
