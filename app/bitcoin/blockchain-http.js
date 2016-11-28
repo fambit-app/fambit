@@ -1,3 +1,5 @@
+const Raven = require('raven-js');
+
 class BlockchainHttp {
 
     /**
@@ -7,7 +9,11 @@ class BlockchainHttp {
      */
     getBalance(address) {
         return this._getRequest(`https://blockchain.info/q/addressbalance/${address}`)
-            .then((val) => parseInt(val) / 100000);
+            .then((val) => parseInt(val) / 100000)
+            .catch((err) => {
+                Raven.captureMessage('Blockchain balance request failed', err);
+                Promise.reject(err);
+            });
     }
 
     getTransactionList(address) {
