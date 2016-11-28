@@ -1,6 +1,13 @@
 const controller = require('../bitcoin/controller')();
 const filter = require('./bitcoin-filter');
 
+let runtime;
+if (typeof browser === 'undefined') {
+    runtime = chrome;
+} else {
+    runtime = browser;
+}
+
 function renderHistory(history) {
     const historyTable = document.querySelector('.history tbody');
     while (historyTable.firstChild) {
@@ -35,6 +42,10 @@ function renderHistory(history) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Add listener for settings button
+    const settingsElement = document.getElementById('settings');
+    settingsElement.addEventListener('click', () => runtime.runtime.openOptionsPage());
+
     // Set up bottom bar with bitcoin amount and address
     const addressElement = document.getElementById('bitcoin-address');
     addressElement.innerHTML = controller.publicKey();
@@ -65,15 +76,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (bannedDomains.indexOf(currentDonation.domain) === -1) {
                     bannedDomains.push(currentDonation.domain);
 
-                    const pendingDonations = JSON.parse(localStorage.getItem('pending-donations') || '[]');
+                    console.log('rekt storage', bannedDomains);
+                    runtime.storage.sync.set({'banned-domains': bannedDomains});
                     localStorage.setItem('banned-domains', JSON.stringify(bannedDomains));
+                    const pendingDonations = JSON.parse(localStorage.getItem('pending-donations') || '[]');
                     localStorage.setItem('pending-donations', JSON.stringify(pendingDonations.filter((donation) => donation.domain !== currentDonation.domain)));
 
                     history
                         .filter((view) => view.domain === currentDonation.domain)
                         .forEach((view) => {
                             view.amount = undefined;
-                            view.reason = 'Domain is banned';
+                            view.reason = 'Domain banned';
                         });
                     localStorage.setItem('page-views', JSON.stringify(history));
                     banDomainElement.className = undefined;

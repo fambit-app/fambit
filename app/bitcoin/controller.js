@@ -5,7 +5,7 @@ const BlockchainWs = require('./blockchain-websocket');
 const Address = require('./address');
 
 // What percentage of remaining funds to donate on-page-visit
-const PER_VISIT_DONATION = 0.0001;
+const DEFAULT_DONATION_PERCENTAGE = 0.0001;
 // Minimum amount to send in a multi-donation transaction. If too low, then the blockchain won't process the donations.
 // const THRESHOLD = 0.000001; // unused currently
 // Minimum delay before cached information (e.g. balance) is updated from blockchain.info
@@ -15,13 +15,14 @@ const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
  * Gets bitcoin data and sends finished transactions to blockchain.info
  */
 class LiveController {
-    constructor(save, retrieve) {
+    constructor(save, retrieve, donationPercentage) {
         this._save = save;
         this._retrieve = retrieve;
         this._pending = new PendingDonations(save, retrieve);
         this._http = new BlockchainHttp();
         this._ws = new BlockchainWs(this._http);
         this._address = Address.fromStorage(retrieve);
+        this._donationPercentage = donationPercentage;
 
         if (this._address === undefined) {
             console.error('LiveController: bitcoin address has not been generated yet!');
@@ -76,15 +77,19 @@ class LiveController {
         } else if (bannedDomains.indexOf(request.domain) !== -1) {
             return Promise.resolve({
                 date,
-                reason: 'Domain is banned'
+                reason: 'Domain banned'
             });
         }
 
         return this.balance().then((balance) => {
-            const amount = balance * PER_VISIT_DONATION;
+            const amount = balance * this._donationPercentage;
             this._pending.queue(request.recipient, amount, date);
             return {recipient: request.recipient, amount, date};
         });
+    }
+
+    updateDonationPercentage(donationPercentage) {
+        this._donationPercentage = donationPercentage;
     }
 
     commitTransaction() {
@@ -99,11 +104,12 @@ class LiveController {
  * Used when LocalStorage has the key 'FAKE' with value 'TRUE'
  */
 class FakeController {
-    constructor(save, retrieve) {
+    constructor(save, retrieve, donationPercentage) {
         this._save = save;
         this._retrieve = retrieve;
         this._pending = new PendingDonations(save, retrieve);
         this._address = Address.fromStorage(retrieve);
+        this._donationPercentage = donationPercentage;
     }
 
     publicKey() {
@@ -143,15 +149,19 @@ class FakeController {
         } else if (bannedDomains.indexOf(request.domain) !== -1) {
             return Promise.resolve({
                 date,
-                reason: 'Domain is banned'
+                reason: 'Domain banned'
             });
         }
 
         return this.balance().then((balance) => {
-            const amount = balance * PER_VISIT_DONATION;
+            const amount = balance * this._donationPercentage;
             this._pending.queue(request.recipient, request.domain, amount, date);
             return {amount, date};
         });
+    }
+
+    updateDonationPercentage(donationPercentage) {
+        this._donationPercentage = donationPercentage;
     }
 
     commitTransaction() {
@@ -167,7 +177,14 @@ class FakeController {
     }
 }
 
-function build(save, retrieve) {
+/**
+ * Only background.js needs to provide donationPercentage, because it's the only one calling donate()
+ * @param donationPercentage
+ * @param save
+ * @param retrieve
+ * @return Object controller
+ */
+function build(donationPercentage, save, retrieve) {
     save = save || localStorage.setItem.bind(localStorage);
     retrieve = retrieve || localStorage.getItem.bind(localStorage);
     if (process.env.NODE_ENV === 'production') {
@@ -179,12 +196,16 @@ function build(save, retrieve) {
         Address.generate(save);
     }
 
-    if (retrieve('fake')) {
-        console.log('Using fake controller');
-        return new FakeController(save, retrieve);
+    if (donationPercentage === undefined) {
+        donationPercentage = DEFAULT_DONATION_PERCENTAGE;
     }
 
-    return new LiveController(save, retrieve);
+    if (retrieve('fake')) {
+        console.log('Using fake controller');
+        return new FakeController(save, retrieve, donationPercentage);
+    }
+
+    return new LiveController(save, retrieve, donationPercentage);
 }
 
 module.exports = build;

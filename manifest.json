@@ -39,10 +39,15 @@
     }
   ],
 
+  "options_ui": {
+    "page": "settings.html"
+  },
+
   "permissions": [
     "https://*.blockchain.info/*",
     "activeTab",
     "tabs",
-    "alarms"
+    "alarms",
+    "storage"
   ]
 }
