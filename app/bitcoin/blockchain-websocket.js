@@ -9,8 +9,10 @@ class BlockchainWebsocket {
             if (data.op === 'status') {
                 console.log(`BlockchainWebsocket: ${data.msg}`);
             } else if (data.op === 'utx') {
-                this.lastBalance = http.getBalance(address.publicKey);
-                this._listeners.forEach((onBalanceChanged) => onBalanceChanged(this.lastBalance));
+                http.getBalance(address.publicKey).then((balance) => {
+                    this.lastBalance = balance;
+                    this._listeners.forEach((onBalanceChanged) => onBalanceChanged(balance));
+                });
             }
         };
 

@@ -15,12 +15,12 @@ const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
  */
 class LiveController {
     constructor(save, retrieve) {
+        this._save = save;
         this._retrieve = retrieve;
         this._pending = new PendingDonations(save, retrieve);
         this._http = new BlockchainHttp();
         this._ws = new BlockchainWs(this._http);
         this._address = Address.fromStorage(retrieve);
-        this._cachedBalance = undefined;
 
         if (this._address === undefined) {
             console.error('LiveController: bitcoin address has not been generated yet!');
@@ -36,17 +36,18 @@ class LiveController {
      * @return {*}
      */
     balance() {
-        if (this._cachedBalance !== undefined && Date.now() < new Date(this._cachedBalance.date.getTime() + CACHE_DURATION)) {
-            return Promise.resolve(this._cachedBalance.value);
+        const cachedBalance = JSON.parse(this._retrieve('cached-balance') || {});
+        if (cachedBalance.date !== undefined && Date.now() < new Date(cachedBalance.date.getTime() + CACHE_DURATION)) {
+            return Promise.resolve(cachedBalance.value);
         }
 
         return this._http.getBalance(this.publicKey()).then((externalBalance) => {
             const actualBalance = externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
 
-            this._cachedBalance = {
+            this._save('cached-balance', JSON.stringify({
                 date: Date.now(),
                 value: actualBalance
-            };
+            }));
             return actualBalance;
         });
     }
@@ -55,10 +56,10 @@ class LiveController {
         this._ws.addListener((externalBalance) => {
             const actualBalance = externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
 
-            this._cachedBalance = {
+            this._save('cached-balance', JSON.stringify({
                 date: Date.now(),
                 value: actualBalance
-            };
+            }));
             onBalanceChange(actualBalance);
         });
     }
