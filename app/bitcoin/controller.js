@@ -170,7 +170,6 @@ class FakeController {
 function build(save, retrieve) {
     save = save || localStorage.setItem.bind(localStorage);
     retrieve = retrieve || localStorage.getItem.bind(localStorage);
-    console.log(process.env.NODE_ENV)
     if (process.env.NODE_ENV === 'production') {
         console.log('Starting Raven to watch for errors');
         Raven.config('https://8d9e6a8ea4cd4e618bcc33992838b20b@sentry.fuzzlesoft.ca/8').install();
