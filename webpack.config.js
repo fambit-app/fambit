@@ -27,7 +27,8 @@ var config = {
     output: {
         filename: '[name].js',
         path: __dirname + '/dist'
-    }
+    },
+    devtool: "inline-source-map"
 };
 
 module.exports = (env) => {

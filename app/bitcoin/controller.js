@@ -38,7 +38,7 @@ class LiveController {
      */
     balance() {
         const cachedBalance = JSON.parse(this._retrieve('cached-balance') || '{}');
-        if (cachedBalance.date !== undefined && Date.now() < new Date(cachedBalance.date.getTime() + CACHE_DURATION)) {
+        if (cachedBalance.date !== undefined && Date.now() < new Date(cachedBalance.date + CACHE_DURATION)) {
             return Promise.resolve(cachedBalance.value);
         }
 
