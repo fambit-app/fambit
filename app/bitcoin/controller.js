@@ -64,17 +64,30 @@ class LiveController {
         });
     }
 
-    donate(recipient) {
-        this.balance().then((balance) => {
+    donate(request) {
+        const date = Date.now();
+        const bannedDomains = JSON.parse(localStorage.getItem('banned-domains') || '[]');
+        if (!request.recipient) {
+            return Promise.resolve({
+                date,
+                reason: 'No Fambit support'
+            });
+        } else if (bannedDomains.indexOf(request.domain) !== -1) {
+            return Promise.resolve({
+                date,
+                reason: 'Domain is banned'
+            });
+        }
+
+        return this.balance().then((balance) => {
             const amount = balance * PER_VISIT_DONATION;
-            const date = Date.now();
-            this._pending.queue(recipient, amount, date);
-            return {recipient, amount, date};
+            this._pending.queue(request.recipient, amount, date);
+            return {recipient: request.recipient, amount, date};
         });
     }
 
     commitTransaction() {
-
+        // Note: in `pending-donations`, `amount` is in milli-bitcoins
     }
 }
 
@@ -118,12 +131,25 @@ class FakeController {
         });
     }
 
-    donate(recipient) {
+    donate(request) {
+        const date = Date.now();
+        const bannedDomains = JSON.parse(localStorage.getItem('banned-domains') || '[]');
+        if (!request.recipient) {
+            return Promise.resolve({
+                date,
+                reason: 'No Fambit support'
+            });
+        } else if (bannedDomains.indexOf(request.domain) !== -1) {
+            return Promise.resolve({
+                date,
+                reason: 'Domain is banned'
+            });
+        }
+
         return this.balance().then((balance) => {
             const amount = balance * PER_VISIT_DONATION;
-            const date = Date.now();
-            this._pending.queue(recipient, amount, date);
-            return {recipient, amount, date};
+            this._pending.queue(request.recipient, request.domain, amount, date);
+            return {amount, date};
         });
     }
 

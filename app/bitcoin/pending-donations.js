@@ -10,9 +10,9 @@ class PendingDonations {
         }
     }
 
-    queue(address, amount, date) {
+    queue(address, domain, amount, date) {
         const donations = JSON.parse(this._retrieve(PENDING_KEY));
-        donations.push({address, amount, date});
+        donations.push({address, domain, amount, date});
         this._save(PENDING_KEY, JSON.stringify(donations));
     }
 

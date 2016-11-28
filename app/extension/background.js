@@ -78,29 +78,19 @@ runtime.runtime.onMessage.addListener((request) => {
             return; // Don't add to fambit history if have no bitcoin yet
         }
 
-        let promise;
-        if (request.recipient) {
-            promise = controller.donate(request.recipient);
-        } else {
-            promise = Promise.resolve();
-        }
-
-        promise.then((donation) => {
+        controller.donate(request).then((donation) => {
             const pageDonation = {
+                recipient: request.recipient,
                 url: request.url,
                 domain: request.domain,
-                date: Date.now()
+                date: donation.date,
+                amount: donation.amount,
+                reason: donation.reason,
             };
 
-            if (donation) {
-                pageDonation.amount = donation.amount;
-                pageDonation.recipient = donation.recipient;
-                pageDonation.date = donation.date;
-            }
-
-            const pageHistory = JSON.parse(localStorage.getItem('page-donations') || '[]');
+            const pageHistory = JSON.parse(localStorage.getItem('page-views') || '[]');
             pageHistory.unshift(pageDonation);
-            localStorage.setItem('page-donations', JSON.stringify(pageHistory));
+            localStorage.setItem('page-views', JSON.stringify(pageHistory));
 
             if (onboardStatus !== 'DONE' && localStorage.getItem('viewed-funded-popup')) {
                 localStorage.setItem('onboard-status', 'DONE');
@@ -117,7 +107,7 @@ runtime.runtime.onMessage.addListener((request) => {
             }
         });
 
-        if (localStorage.getItem('page-donations') !== null) {
+        if (localStorage.getItem('page-views') !== null) {
             localStorage.setItem('onboard-status', 'DONE');
             updatePopup('DONE');
         }
