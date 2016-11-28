@@ -315,10 +315,6 @@ section h3 {
     overflow: hidden;
 }
 
-.info > div:hover {
-    cursor: pointer;
-}
-
 .info-content {
     flex: 1 0 auto;
     padding: 7px 1px;
@@ -330,11 +326,7 @@ section h3 {
     font-weight: bold;
     color: #555b6e;
 
-    transition: color ease 0.3s
-}
-
-.info > div:hover .info-content {
-    color: #8c2a2a;
+    transition: color ease 0.3s;
 }
 
 .info .slide-container {
@@ -343,15 +335,27 @@ section h3 {
     font-family: 'Lato', sans-serif;
     background-color: #555b6e;
     transition: left 0.3s ease,
-    background-color 0.3s ease; /* can just background-color? */
+    background-color 0.3s ease;
 }
 
 .info .slide-container span {
     padding: 1px;
 }
 
-.info div:hover > .slide-container {
+.info > div.enabled:hover .info-content {
+    color: #8c2a2a;
+}
+
+.info div.enabled:hover > .slide-container {
     background-color: #8c2a2a;
+}
+
+div.enabled:hover > .slide-container, .amount.slide-container:hover {
+    left: -100%;
+}
+
+.info > div.enabled:hover {
+    cursor: pointer;
 }
 
 .slide-container {
@@ -367,8 +371,4 @@ section h3 {
 
 .slide-container > span {
     width: 50%;
-}
-
-div:hover > .slide-container, .slide-container:hover {
-    left: -100%;
 }
