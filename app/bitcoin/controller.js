@@ -1,5 +1,6 @@
 const Raven = require('raven-js');
 const PendingDonations = require('./pending-donations');
+const bitcoinTransaction = require('./bitcoin-transaction');
 const BlockchainHttp = require('./blockchain-http');
 const BlockchainWs = require('./blockchain-websocket');
 const Address = require('./address');
@@ -94,6 +95,9 @@ class LiveController {
 
     commitTransaction() {
         // Note: in `pending-donations`, `amount` is in milli-bitcoins
+        const donations = this._pending.commit();
+        const hash = bitcoinTransaction(donations);
+        this._http.submitTransaction(this._address.publicKey, hash.toHex());
     }
 }
 
