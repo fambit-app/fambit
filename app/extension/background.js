@@ -93,7 +93,7 @@ runtime.runtime.onMessage.addListener((request) => {
             chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
                 // ... but only if we're still on the same page by the time it loaded
                 if (tabs[0].url !== pageDonation.url) {
-                    return
+                    return;
                 }
 
                 if (pageDonation.amount) {
@@ -151,7 +151,7 @@ runtime.alarms.onAlarm.addListener((alarm) => {
 });
 
 // Change fambit icon on tab change according to if this tab's page received a donation
-runtime.tabs.onActivated.addListener((tab) => {
+runtime.tabs.onActivated.addListener(() => {
     chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
         const history = JSON.parse(localStorage.getItem('page-views') || '[]');
         const lastDonation = history.filter((donation) => donation.url === tabs[0].url)[0];
