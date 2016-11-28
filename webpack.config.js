@@ -1,4 +1,5 @@
-var CommonsChunkPlugin = require('webpack').optimize.CommonsChunkPlugin;
+var webpack = require('webpack');
+var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var config = {
@@ -27,6 +28,21 @@ var config = {
         filename: '[name].js',
         path: __dirname + '/dist'
     }
-}
+};
 
-module.exports = config;
+module.exports = (env) => {
+    if (env.prod === 'true') {
+        config.plugins.push(new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }));
+    } else {
+        config.plugins.push(new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('development')
+            }
+        }));
+    }
+    return config;
+};

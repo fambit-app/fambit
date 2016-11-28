@@ -1,3 +1,4 @@
+const Raven = require('raven-js');
 const PendingDonations = require('./pending-donations');
 const BlockchainHttp = require('./blockchain-http');
 const BlockchainWs = require('./blockchain-websocket');
@@ -36,7 +37,7 @@ class LiveController {
      * @return {*}
      */
     balance() {
-        const cachedBalance = JSON.parse(this._retrieve('cached-balance') || {});
+        const cachedBalance = JSON.parse(this._retrieve('cached-balance') || '{}');
         if (cachedBalance.date !== undefined && Date.now() < new Date(cachedBalance.date.getTime() + CACHE_DURATION)) {
             return Promise.resolve(cachedBalance.value);
         }
@@ -169,6 +170,11 @@ class FakeController {
 function build(save, retrieve) {
     save = save || localStorage.setItem.bind(localStorage);
     retrieve = retrieve || localStorage.getItem.bind(localStorage);
+    console.log(process.env.NODE_ENV)
+    if (process.env.NODE_ENV === 'production') {
+        console.log('Starting Raven to watch for errors');
+        Raven.config('https://8d9e6a8ea4cd4e618bcc33992838b20b@sentry.fuzzlesoft.ca/8').install();
+    }
 
     if (!Address.fromStorage(retrieve)) {
         Address.generate(save);
