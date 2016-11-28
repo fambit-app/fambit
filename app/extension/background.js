@@ -17,7 +17,7 @@ if (localStorage.getItem('onboard-status') === null) { // First install
 }
 
 runtime.storage.sync.get('banned-domains', (res) => {
-    localStorage.setItem('banned-domains', JSON.stringify(res['banned-domains']));
+    localStorage.setItem('banned-domains', JSON.stringify(res['banned-domains'] || []));
 });
 
 runtime.storage.sync.get('donation-percentage', (res) => {
@@ -26,7 +26,8 @@ runtime.storage.sync.get('donation-percentage', (res) => {
     runtime.storage.onChanged.addListener((changes) => {
         if (changes['donation-percentage']) {
             controller.updateDonationPercentage(changes['donation-percentage'].newValue);
-        } else if (changes['banned-domains']) {
+        }
+        if (changes['banned-domains']) {
             localStorage.setItem('banned-domains', JSON.stringify(changes['banned-domains'].newValue));
         }
     });
