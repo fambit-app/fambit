@@ -4,10 +4,10 @@ const BlockchainHttp = require('./blockchain-http');
 const BlockchainWs = require('./blockchain-websocket');
 const Address = require('./address');
 
-// What percentage of remaining funds to donate on-page-visit
+// 0.0001% of remaining funds are donated on-page-visit
 const DEFAULT_DONATION_PERCENTAGE = 0.0001;
 // Minimum amount to send in a multi-donation transaction. If too low, then the blockchain won't process the donations.
-// const THRESHOLD = 0.000001; // unused currently
+// const THRESHOLD = 0.001; // 10 μBTC. unused currently
 // Minimum delay before cached information (e.g. balance) is updated from blockchain.info
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 
