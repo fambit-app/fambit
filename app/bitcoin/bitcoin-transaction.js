@@ -1,5 +1,4 @@
 const bitcoinJS = require('bitcoinjs-lib');
-const BlockchainHttp = require('./blockchain-http');
 
 module.exports = function bitcoinTransaction(privateKey, publicKey, donations, http) {
     console.log(donations);
@@ -22,9 +21,7 @@ module.exports = function bitcoinTransaction(privateKey, publicKey, donations, h
             inputSatoshi += inputToUse.value;
         }
 
-        const privateKey = bitcoinJS.ECPair.fromWIF(privateKey);
-        transaction.sign(0, privateKey);
-
+        transaction.sign(0, bitcoinJS.ECPair.fromWIF(privateKey));
         return transaction.build();
     });
 };
