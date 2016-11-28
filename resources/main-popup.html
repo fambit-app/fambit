@@ -11,14 +11,14 @@
     <section class="current-page">
         <h3>Current Page</h3>
         <div class="info">
-            <div class="domain">
+            <div id="ban-domain">
                 <span class="info-content" id="current-domain">...</span>
                 <div class="slide-container">
                     <span>Current Domain</span>
                     <span>Ban Donations to Domain</span>
                 </div>
             </div>
-            <div class="pending-donation" title="pending until next page visit">
+            <div id="cancel-donation">
                 <span class="info-content" id="current-donation">...</span>
                 <div class="slide-container">
                     <span>Pending Donation</span>
@@ -30,7 +30,10 @@
     <section class="history">
         <h3>Donation History</h3>
         <table>
-            <tr><th>Date</th><th>Site</th><th>Donation</th></tr>
+            <thead>
+                <tr><th>Date</th><th>Site</th><th>Donation</th></tr>
+            </thead>
+            <tbody></tbody>
         </table>
     </section>
     <div class="amount slide-container">
