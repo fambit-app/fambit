@@ -70,6 +70,7 @@ function updatePopup(onboardStatus) {
         });
     }
 }
+updatePopup(localStorage.getItem('onboard-status'));
 
 runtime.runtime.onMessage.addListener((request) => {
     if (request.action === 'PAGE_LOAD') {
@@ -87,6 +88,32 @@ runtime.runtime.onMessage.addListener((request) => {
                 amount: donation.amount,
                 reason: donation.reason,
             };
+
+            // If a donation was sent, update icon to show that a donation was received...
+            chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
+                // ... but only if we're still on the same page by the time it loaded
+                if (tabs[0].url !== pageDonation.url) {
+                    return
+                }
+
+                if (pageDonation.amount) {
+                    runtime.browserAction.setIcon({
+                        path: {
+                            '16': 'icon-donated-16.png',
+                            '19': 'icon-donated-19.png',
+                            '24': 'icon-donated-24.png'
+                        }
+                    });
+                } else {
+                    runtime.browserAction.setIcon({
+                        path: {
+                            '16': 'icon-16.png',
+                            '19': 'icon-19.png',
+                            '24': 'icon-24.png'
+                        }
+                    });
+                }
+            });
 
             const pageHistory = JSON.parse(localStorage.getItem('page-views') || '[]');
             pageHistory.unshift(pageDonation);
@@ -123,4 +150,28 @@ runtime.alarms.onAlarm.addListener((alarm) => {
     controller.commitTransaction();
 });
 
-updatePopup(localStorage.getItem('onboard-status'));
+// Change fambit icon on tab change according to if this tab's page received a donation
+runtime.tabs.onActivated.addListener((tab) => {
+    chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
+        const history = JSON.parse(localStorage.getItem('page-views') || '[]');
+        const lastDonation = history.filter((donation) => donation.url === tabs[0].url)[0];
+
+        if (lastDonation && lastDonation.amount) {
+            runtime.browserAction.setIcon({
+                path: {
+                    '16': 'icon-donated-16.png',
+                    '19': 'icon-donated-19.png',
+                    '24': 'icon-donated-24.png'
+                }
+            });
+        } else {
+            runtime.browserAction.setIcon({
+                path: {
+                    '16': 'icon-16.png',
+                    '19': 'icon-19.png',
+                    '24': 'icon-24.png'
+                }
+            });
+        }
+    });
+});
