@@ -54,9 +54,7 @@ class LiveController {
             });
         }
 
-        return promise.then((externalBalance) => {
-            return externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
-        });
+        return promise.then((externalBalance) => externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0));
     }
 
     liveBalance(onBalanceChange) {
