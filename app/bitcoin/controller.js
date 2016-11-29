@@ -39,19 +39,23 @@ class LiveController {
      * @return {*}
      */
     balance() {
+        let promise;
+
         const cachedBalance = JSON.parse(this._retrieve('cached-balance') || '{}');
         if (cachedBalance.date !== undefined && Date.now() < new Date(cachedBalance.date + CACHE_DURATION)) {
-            return Promise.resolve(cachedBalance.value);
+            promise = Promise.resolve(cachedBalance.value);
+        } else {
+            promise = this._http.getBalance(this.publicKey());
+            promise.then((externalBalance) => {
+                this._save('cached-balance', JSON.stringify({
+                    date: Date.now(),
+                    value: externalBalance
+                }));
+            });
         }
 
-        return this._http.getBalance(this.publicKey()).then((externalBalance) => {
-            const actualBalance = externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
-
-            this._save('cached-balance', JSON.stringify({
-                date: Date.now(),
-                value: actualBalance
-            }));
-            return actualBalance;
+        return promise.then((externalBalance) => {
+            return externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
         });
     }
 
@@ -84,8 +88,8 @@ class LiveController {
 
         return this.balance().then((balance) => {
             const amount = balance * this._donationPercentage;
-            this._pending.queue(request.recipient, amount, date);
-            return {recipient: request.recipient, amount, date};
+            this._pending.queue(request.recipient, request.domain, amount, date);
+            return {amount, date};
         });
     }
 
