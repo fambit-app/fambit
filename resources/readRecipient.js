@@ -1,4 +1,4 @@
-const meta = document.querySelector('head meta[name="fambit-recipient"]');
+const meta = document.querySelector('head meta[name="bitcoin-recipient"]');
 
 let recipient = undefined;
 if (meta !== null) {
