@@ -1,5 +1,6 @@
 const Raven = require('raven-js');
 const PendingDonations = require('./pending-donations');
+const bitcoinTransaction = require('./bitcoin-transaction');
 const BlockchainHttp = require('./blockchain-http');
 const BlockchainWs = require('./blockchain-websocket');
 const Address = require('./address');
@@ -38,20 +39,22 @@ class LiveController {
      * @return {*}
      */
     balance() {
+        let promise;
+
         const cachedBalance = JSON.parse(this._retrieve('cached-balance') || '{}');
         if (cachedBalance.date !== undefined && Date.now() < new Date(cachedBalance.date + CACHE_DURATION)) {
-            return Promise.resolve(cachedBalance.value);
+            promise = Promise.resolve(cachedBalance.value);
+        } else {
+            promise = this._http.getBalance(this.publicKey());
+            promise.then((externalBalance) => {
+                this._save('cached-balance', JSON.stringify({
+                    date: Date.now(),
+                    value: externalBalance
+                }));
+            });
         }
 
-        return this._http.getBalance(this.publicKey()).then((externalBalance) => {
-            const actualBalance = externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
-
-            this._save('cached-balance', JSON.stringify({
-                date: Date.now(),
-                value: actualBalance
-            }));
-            return actualBalance;
-        });
+        return promise.then((externalBalance) => externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0));
     }
 
     liveBalance(onBalanceChange) {
@@ -83,8 +86,8 @@ class LiveController {
 
         return this.balance().then((balance) => {
             const amount = balance * this._donationPercentage;
-            this._pending.queue(request.recipient, amount, date);
-            return {recipient: request.recipient, amount, date};
+            this._pending.queue(request.recipient, request.domain, amount, date);
+            return {amount, date};
         });
     }
 
@@ -94,6 +97,9 @@ class LiveController {
 
     commitTransaction() {
         // Note: in `pending-donations`, `amount` is in milli-bitcoins
+        const donations = this._pending.commit();
+        const hash = bitcoinTransaction(donations);
+        this._http.submitTransaction(this._address.publicKey, hash.toHex());
     }
 }
 

@@ -7,7 +7,7 @@ test('should generate new address', t => {
     BitcoinAddress.generate(mock.save);
 
     t.is(mock.retrieve('private-key').length, 52);
-    t.is(mock.retrieve('public-key').length, 34);
+    t.truthy(mock.retrieve('public-key').length >= 26 && mock.retrieve('public-key').length <= 35);
 });
 
 test('should return undefined if keys not in storage', t => {
