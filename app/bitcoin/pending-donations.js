@@ -28,7 +28,7 @@ class PendingDonations {
 
         // Group donations by bitcoin address, strips away unneeded info like date/domain
         donations.forEach((donation) => {
-            let amountForAddress = rawDonations[donation.address] || 0;
+            const amountForAddress = rawDonations[donation.address] || 0;
             rawDonations[donation.address] = amountForAddress + donation.amount;
         });
         this._save(PENDING_KEY, '[]');

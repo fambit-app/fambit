@@ -16,8 +16,8 @@ module.exports = function bitcoinTransaction(privateKey, publicKey, donations, h
 
     const transaction = new bitcoinJS.TransactionBuilder();
     for (const address in donations) {
-        if (donations.hasOwnProperty(address)) {
-            const amount = donations[amount] * 100; // μBTC -> satoshi
+        if (Object.prototype.hasOwnProperty.call(donations, address)) {
+            const amount = donations[address] * 100; // μBTC -> satoshi
             transaction.addOutput(address, amount);
             totalDonatedSatoshi += amount;
         }
@@ -28,7 +28,7 @@ module.exports = function bitcoinTransaction(privateKey, publicKey, donations, h
     let inputSatoshi = 0;
     http.getTransactionList(publicKey).then((unspentInputs) => {
         let localIndex = 0;
-        while (true) {
+        while (inputSatoshi < totalDonatedSatoshi) {
             if (localIndex >= unspentInputs.length) {
                 throw new Error('Not enough bitcoin to perform donation');
             }
@@ -36,17 +36,13 @@ module.exports = function bitcoinTransaction(privateKey, publicKey, donations, h
             const inputToUse = unspentInputs[localIndex++];
             transaction.addInput(inputToUse.tx_hash, inputToUse.tx_index);
             inputSatoshi += inputToUse.value;
+        }
 
-            if (inputSatoshi > totalDonatedSatoshi) {
-                // Put "dust" back in receiving address. Leftover bitcoin not put in an output is given as a fee
-                // to the miner
-
-                const dust = inputSatoshi - totalDonatedSatoshi;
-                if (dust > 0) {
-                    transaction.addOutput(publicKey, dust - miningFee);
-                }
-                break;
-            }
+        // Put "dust" back in receiving address. Leftover bitcoin not put in an output is given as a fee
+        // to the miner
+        const dust = inputSatoshi - totalDonatedSatoshi;
+        if (dust > 0) {
+            transaction.addOutput(publicKey, dust - miningFee);
         }
 
         transaction.sign(0, bitcoinJS.ECPair.fromWIF(privateKey));
