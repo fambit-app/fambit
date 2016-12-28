@@ -3,7 +3,7 @@
  * @param milliBitcoins formatted
  * @return string to display bitcoin with a maximum of three decimal places.
  */
-module.exports = function filter(milliBitcoins) {
+module.exports = function format(milliBitcoins) {
     const digits = 2;
     if (milliBitcoins < 0.01) {
         return `${(milliBitcoins * 1000).toFixed(digits)} μBTC`;

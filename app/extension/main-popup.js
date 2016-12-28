@@ -1,5 +1,5 @@
 const controller = require('../bitcoin/controller')();
-const filter = require('./bitcoin-filter');
+const format = require('./bitcoin-format');
 
 let runtime;
 if (typeof browser === 'undefined') {
@@ -29,7 +29,7 @@ function renderHistory(history) {
         site.appendChild(document.createTextNode(pageDonation.domain));
         const fund = document.createElement('td');
         if (pageDonation.amount) {
-            fund.appendChild(document.createTextNode(filter(pageDonation.amount)));
+            fund.appendChild(document.createTextNode(format(pageDonation.amount)));
         } else {
             fund.appendChild(document.createTextNode('none'));
             fund.title = pageDonation.reason;
@@ -47,11 +47,23 @@ document.addEventListener('DOMContentLoaded', () => {
     settingsElement.addEventListener('click', () => runtime.runtime.openOptionsPage());
 
     // Set up bottom bar with bitcoin amount and address
+    const amountContainer = document.getElementsByClassName('amount')[0];
     const addressElement = document.getElementById('bitcoin-address');
     addressElement.innerHTML = controller.publicKey();
     controller.balance().then((balance) => {
         const amountElement = document.getElementById('pool-amount');
-        amountElement.innerHTML = filter(balance);
+        if (balance === undefined) {
+            const reportLink = document.createElement('a');
+            reportLink.href = 'https://github.com/fambit-app/fambit/issues';
+            reportLink.target = '_blank';
+            reportLink.innerHTML = 'Report this bug!';
+            amountContainer.classList.add('error');
+            amountElement.innerHTML = 'Unknown balance. ';
+            amountElement.appendChild(reportLink);
+        } else {
+            amountContainer.classList.remove('error');
+            amountElement.innerHTML = format(balance);
+        }
     });
 
     const history = JSON.parse(localStorage.getItem('page-views') || '[]');
@@ -98,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (currentDonation.amount) {
-                donationElement.innerHTML = filter(currentDonation.amount);
+                donationElement.innerHTML = format(currentDonation.amount);
 
                 // Control to cancel last donation
                 cancelDonationElement.className = 'enabled';

@@ -34,7 +34,7 @@ runtime.storage.sync.get('donation-percentage', (res) => {
 
     function updatePopup(onboardStatus) {
         function checkFunded(newBalance) {
-            if (newBalance <= 0 || localStorage.getItem('onboard-status') !== 'NO_BITCOIN') {
+            if (!newBalance || newBalance <= 0 || localStorage.getItem('onboard-status') !== 'NO_BITCOIN') {
                 return;
             }
 
