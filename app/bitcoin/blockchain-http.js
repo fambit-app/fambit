@@ -11,7 +11,7 @@ class BlockchainHttp {
         return this._getRequest(`https://blockchain.info/q/addressbalance/${address}`)
             .then((val) => parseInt(val) / 100000)
             .catch((err) => {
-                console.warn("Resolving balance error: ", err);
+                console.warn('Resolving balance error: ', err);
                 Raven.captureMessage('Blockchain balance request failed', err);
                 return Promise.resolve(undefined);
             });

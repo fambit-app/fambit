@@ -60,9 +60,8 @@ class LiveController {
         return promise.then((externalBalance) => {
             if (externalBalance === undefined) {
                 return undefined;
-            } else {
-                return externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0)
             }
+            return externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
         });
     }
 

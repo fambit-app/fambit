@@ -1,3 +1,5 @@
+const Raven = require('raven-js');
+
 class BlockchainWebsocket {
     constructor(http, address) {
         this._connect(http, address);
@@ -7,7 +9,7 @@ class BlockchainWebsocket {
         setInterval(() => {
             if (this._ws.readyState > 1) {
                 this._connect();
-            } else if (this._ws.readyState == 1) {
+            } else if (this._ws.readyState === 1) {
                 this._ws.send(JSON.stringify({
                     op: 'ping'
                 }));

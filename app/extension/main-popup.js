@@ -52,11 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
     addressElement.innerHTML = controller.publicKey();
     controller.balance().then((balance) => {
         const amountElement = document.getElementById('pool-amount');
-        if (balance == undefined) {
-            const reportLink = document.createElement("a");
-            reportLink.href = "https://github.com/fambit-app/fambit/issues";
+        if (balance === undefined) {
+            const reportLink = document.createElement('a');
+            reportLink.href = 'https://github.com/fambit-app/fambit/issues';
             reportLink.target = '_blank';
-            reportLink.innerHTML = "Report this bug!";
+            reportLink.innerHTML = 'Report this bug!';
             amountContainer.classList.add('error');
             amountElement.innerHTML = 'Unknown balance. ';
             amountElement.appendChild(reportLink);
