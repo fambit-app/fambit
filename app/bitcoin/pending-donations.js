@@ -23,9 +23,16 @@ class PendingDonations {
     }
 
     commit() {
-        const transactions = this.list();
+        const donations = this.list();
+        const rawDonations = {};
+
+        // Group donations by bitcoin address, strips away unneeded info like date/domain
+        donations.forEach((donation) => {
+            const amountForAddress = rawDonations[donation.address] || 0;
+            rawDonations[donation.address] = amountForAddress + donation.amount;
+        });
         this._save(PENDING_KEY, '[]');
-        return transactions;
+        return rawDonations;
     }
 }
 
