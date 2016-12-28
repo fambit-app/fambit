@@ -11,8 +11,9 @@ class BlockchainHttp {
         return this._getRequest(`https://blockchain.info/q/addressbalance/${address}`)
             .then((val) => parseInt(val) / 100000)
             .catch((err) => {
+                console.warn("Resolving balance error: ", err);
                 Raven.captureMessage('Blockchain balance request failed', err);
-                Promise.reject(err);
+                return Promise.resolve(undefined);
             });
     }
 
@@ -39,8 +40,12 @@ class BlockchainHttp {
                 if (request.readyState === 4) {
                     if (request.status === 200) {
                         resolve(request.responseText);
+                    } else if (request.status === 0) {
+                        reject(`Request failed: GET ${url}`);
                     } else {
-                        reject({status: request.status, data: request.responseText});
+                        reject({error: `Unexpected request response: GET ${url}`,
+                            status: request.status,
+                            responseText: request.responseText});
                     }
                 }
             };
@@ -54,14 +59,19 @@ class BlockchainHttp {
         return new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();
             request.open('POST', url, true);
-
             request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
             request.onreadystatechange = function () {
-                if (request.readyState === 4 && request.status === 200) {
-                    resolve(request.responseText);
-                } else if (request.readyState === 4 && request.status >= 400) {
-                    reject(request.responseText);
+                if (request.readyState === 4) {
+                    if (request.status === 200) {
+                        resolve(request.responseText);
+                    } else if (request.status === 0) {
+                        reject(`Request failed: POST ${url}`);
+                    } else {
+                        reject({error: `Unexpected request response: POST ${url}`,
+                            status: request.status,
+                            responseText: request.responseText});
+                    }
                 }
             };
 

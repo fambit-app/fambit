@@ -47,6 +47,9 @@ class LiveController {
         } else {
             promise = this._http.getBalance(this.publicKey());
             promise.then((externalBalance) => {
+                if (externalBalance === undefined) {
+                    return;
+                }
                 this._save('cached-balance', JSON.stringify({
                     date: Date.now(),
                     value: externalBalance
@@ -54,7 +57,13 @@ class LiveController {
             });
         }
 
-        return promise.then((externalBalance) => externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0));
+        return promise.then((externalBalance) => {
+            if (externalBalance === undefined) {
+                return undefined;
+            } else {
+                return externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0)
+            }
+        });
     }
 
     liveBalance(onBalanceChange) {

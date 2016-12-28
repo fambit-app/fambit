@@ -171,6 +171,10 @@ p {
     overflow: hidden;
 }
 
+.amount a {
+    color: inherit;
+}
+
 .amount span > span:nth-child(1) {
     padding-left: 5px;
 }
@@ -355,7 +359,7 @@ section h3 {
     background-color: #8c2a2a;
 }
 
-div.enabled:hover > .slide-container, .amount .slide-container:hover {
+div.enabled:hover > .slide-container, .amount:not(.error) .slide-container:hover {
     left: -100%;
 }
 
