@@ -1,8 +1,15 @@
-// Saves options to chrome.storage
+let runtime;
+if (typeof browser === 'undefined') {
+    runtime = chrome;
+} else {
+    runtime = browser;
+}
+
+// Saves options to runtime.storage
 function save_options() {
     const donationPercentage = document.getElementById('donation-percentage').value;
     const bannedDomains = [].map.call(document.querySelectorAll('li'), (li) => li.innerHTML);
-    chrome.storage.sync.set({
+    runtime.storage.local.set({
         'donation-percentage': donationPercentage,
         'banned-domains': bannedDomains
     }, () => {
@@ -15,7 +22,7 @@ function save_options() {
 }
 
 function restore_options() {
-    chrome.storage.sync.get({
+    runtime.storage.local.get({
         'banned-domains': [],
         'donation-percentage': 0.0001
     }, function (items) {
