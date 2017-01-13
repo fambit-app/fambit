@@ -12,7 +12,7 @@ class BlockchainHttp {
             .then((val) => parseInt(val) / 100000)
             .catch((err) => {
                 console.warn('Resolving balance error: ', err);
-                Raven.captureMessage('Blockchain balance request failed', err);
+                Raven.captureMessage(`Blockchain balance request failed: + ${err}`);
                 return Promise.resolve(undefined);
             });
     }
