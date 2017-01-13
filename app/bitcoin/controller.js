@@ -203,7 +203,9 @@ function build(donationPercentage, save, retrieve) {
     retrieve = retrieve || localStorage.getItem.bind(localStorage);
     if (process.env.NODE_ENV === 'production') {
         console.log('Starting Raven to watch for errors');
-        Raven.config('https://8d9e6a8ea4cd4e618bcc33992838b20b@sentry.fuzzlesoft.ca/8').install();
+        Raven.config('https://8d9e6a8ea4cd4e618bcc33992838b20b@sentry.fuzzlesoft.ca/8', {
+            stacktrace: true
+        }).install();
     }
 
     if (!Address.fromStorage(retrieve)) {
