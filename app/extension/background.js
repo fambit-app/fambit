@@ -20,6 +20,29 @@ runtime.storage.sync.get('banned-domains', (res) => {
     localStorage.setItem('banned-domains', JSON.stringify(res['banned-domains'] || []));
 });
 
+function currentTabDonated() {
+    return new Promise((resolve) => {
+        chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
+            const history = JSON.parse(localStorage.getItem('page-views') || '[]');
+            const lastDonation = history.filter((donation) => donation.url === tabs[0].url)[0];
+            resolve(lastDonation && lastDonation.amount);
+        });
+    });
+}
+
+function setIcon(type = 'normal') {
+    console.log(`setPopup(${type})`);
+    const modifier = type === 'normal' ? '' : `${type}-`;
+
+    runtime.browserAction.setIcon({
+        path: {
+            '16': `icon-${modifier}16.png`,
+            '19': `icon-${modifier}19.png`,
+            '24': `icon-${modifier}24.png`
+        }
+    });
+}
+
 runtime.storage.sync.get('donation-percentage', (res) => {
     const controller = buildController(res['donation-percentage']);
 
@@ -49,13 +72,7 @@ runtime.storage.sync.get('donation-percentage', (res) => {
             runtime.browserAction.setPopup({
                 popup: 'onboard-popup.html'
             });
-            runtime.browserAction.setIcon({
-                path: {
-                    '16': 'icon-16.png',
-                    '19': 'icon-19.png',
-                    '24': 'icon-24.png'
-                }
-            });
+            setIcon('normal');
 
             controller.balance().then(checkFunded);
             controller.liveBalance((newBalance) => {
@@ -66,34 +83,23 @@ runtime.storage.sync.get('donation-percentage', (res) => {
             runtime.browserAction.setPopup({
                 popup: 'funded-popup.html'
             });
-            runtime.browserAction.setIcon({
-                path: {
-                    '16': 'icon-alert-16.png',
-                    '19': 'icon-alert-19.png',
-                    '24': 'icon-alert-24.png'
-                }
-            });
+            setIcon('alert');
         } else if (onboardStatus === 'DONE') {
             runtime.browserAction.setPopup({
                 popup: 'main-popup.html'
             });
-            runtime.browserAction.setIcon({
-                path: {
-                    '16': 'icon-16.png',
-                    '19': 'icon-19.png',
-                    '24': 'icon-24.png'
-                }
-            });
+            setIcon('normal');
         }
     }
 
     updatePopup(localStorage.getItem('onboard-status'));
 
     runtime.runtime.onMessage.addListener((request) => {
+        console.log(`request.action: ${request.action}`);
         if (request.action === 'PAGE_LOAD') {
             const onboardStatus = localStorage.getItem('onboard-status');
             if (onboardStatus === 'NO_BITCOIN') {
-                return; // Don't add to fambit history if have no bitcoin yet
+                return; // Don't donate if have no bitcoin yet
             }
 
             controller.donate(request).then((donation) => {
@@ -106,7 +112,24 @@ runtime.storage.sync.get('donation-percentage', (res) => {
                     reason: donation.reason,
                 };
 
-                // If a donation was sent, update icon to show that a donation was received...
+                const pageHistory = JSON.parse(localStorage.getItem('page-views') || '[]');
+                pageHistory.unshift(pageDonation);
+                localStorage.setItem('page-views', JSON.stringify(pageHistory));
+
+                // To go from "FUNDED" to done, the user needs to both
+                // 1. View "funded" popup
+                // 2. Visit a fambit-supported page
+                if (onboardStatus === 'FUNDED' && localStorage.getItem('viewed-funded-popup')) {
+                    localStorage.setItem('onboard-status', 'DONE');
+                    updatePopup('DONE');
+                }
+
+                // If the user hasn't viewed the "funded" popup yet, don't change the icon from the "!" icon
+                if (onboardStatus === 'FUNDED' && !localStorage.getItem('viewed-funded-popup')) {
+                    return;
+                }
+
+                // If a donation was sent, update icon to show that a donation was received
                 chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
                     // ... but only if we're still on the same page by the time it loaded
                     if (tabs[0].url !== pageDonation.url) {
@@ -114,47 +137,22 @@ runtime.storage.sync.get('donation-percentage', (res) => {
                     }
 
                     if (pageDonation.amount) {
-                        runtime.browserAction.setIcon({
-                            path: {
-                                '16': 'icon-donated-16.png',
-                                '19': 'icon-donated-19.png',
-                                '24': 'icon-donated-24.png'
-                            }
-                        });
+                        setIcon('donated');
                     } else {
-                        runtime.browserAction.setIcon({
-                            path: {
-                                '16': 'icon-16.png',
-                                '19': 'icon-19.png',
-                                '24': 'icon-24.png'
-                            }
-                        });
+                        setIcon('normal');
                     }
                 });
-
-                const pageHistory = JSON.parse(localStorage.getItem('page-views') || '[]');
-                pageHistory.unshift(pageDonation);
-                localStorage.setItem('page-views', JSON.stringify(pageHistory));
-
-                if (onboardStatus !== 'DONE' && localStorage.getItem('viewed-funded-popup')) {
-                    localStorage.setItem('onboard-status', 'DONE');
-                    updatePopup('DONE');
-                }
             });
         } else if (request.action === 'FUNDED_POPUP_VIEWED') {
             localStorage.setItem('viewed-funded-popup', true);
-            runtime.browserAction.setIcon({
-                path: {
-                    '16': 'icon-16.png',
-                    '19': 'icon-19.png',
-                    '24': 'icon-24.png'
-                }
-            });
-
             if (localStorage.getItem('page-views') !== null) {
                 localStorage.setItem('onboard-status', 'DONE');
-                updatePopup('DONE');
+                runtime.browserAction.setPopup({
+                    popup: 'main-popup.html'
+                });
             }
+
+            currentTabDonated().then((donated) => setIcon(donated ? 'donated' : 'normal'));
         }
     });
 
@@ -167,29 +165,16 @@ runtime.storage.sync.get('donation-percentage', (res) => {
         controller.commitTransaction();
     });
 
-    // Change fambit icon on tab change according to if this tab's page received a donation
+    // When the user changes to an already-opened tab, check history for if page did receive a donation when
+    // it was originally opened, and update icon accordingly
     runtime.tabs.onActivated.addListener(() => {
-        chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
-            const history = JSON.parse(localStorage.getItem('page-views') || '[]');
-            const lastDonation = history.filter((donation) => donation.url === tabs[0].url)[0];
+        const onboardStatus = localStorage.getItem('onboard-status');
+        if (onboardStatus === 'FUNDED' && !localStorage.getItem('viewed-funded-popup')) {
+            // Fambit has received bitcoin, but the user hasn't viewed the "funded" popup. Show the "!" icon
+            setIcon('alert');
+            return;
+        }
 
-            if (lastDonation && lastDonation.amount) {
-                runtime.browserAction.setIcon({
-                    path: {
-                        '16': 'icon-donated-16.png',
-                        '19': 'icon-donated-19.png',
-                        '24': 'icon-donated-24.png'
-                    }
-                });
-            } else {
-                runtime.browserAction.setIcon({
-                    path: {
-                        '16': 'icon-16.png',
-                        '19': 'icon-19.png',
-                        '24': 'icon-24.png'
-                    }
-                });
-            }
-        });
+        currentTabDonated().then((donated) => setIcon(donated ? 'donated' : 'normal'));
     });
 });
