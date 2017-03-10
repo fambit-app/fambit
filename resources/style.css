@@ -289,6 +289,7 @@ p {
     font-family: Inconsolata, monospace;
     border-right: none;
     text-align: right;
+    white-space: nowrap;
 }
 
 .history th:last-child {
