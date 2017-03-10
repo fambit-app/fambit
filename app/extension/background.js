@@ -31,7 +31,6 @@ function currentTabDonated() {
 }
 
 function setIcon(type = 'normal') {
-    console.log(`setPopup(${type})`);
     const modifier = type === 'normal' ? '' : `${type}-`;
 
     runtime.browserAction.setIcon({
@@ -43,7 +42,7 @@ function setIcon(type = 'normal') {
     });
 }
 
-runtime.storage.sync.get('donation-percentage', (res) => {
+runtime.storage.sync.get(['donation-percentage', 'report-errors'], (res) => {
     const controller = buildController(res['donation-percentage']);
 
     runtime.storage.onChanged.addListener((changes) => {
@@ -52,6 +51,14 @@ runtime.storage.sync.get('donation-percentage', (res) => {
         }
         if (changes['banned-domains']) {
             localStorage.setItem('banned-domains', JSON.stringify(changes['banned-domains'].newValue));
+        }
+        if (changes['report-errors']) {
+            localStorage.setItem('report-errors', changes['report-errors'].newValue);
+            if (changes['report-errors'].newValue) {
+                controller.startRaven();
+            } else {
+                controller.stopRaven();
+            }
         }
     });
 
@@ -95,7 +102,6 @@ runtime.storage.sync.get('donation-percentage', (res) => {
     updatePopup(localStorage.getItem('onboard-status'));
 
     runtime.runtime.onMessage.addListener((request) => {
-        console.log(`request.action: ${request.action}`);
         if (request.action === 'PAGE_LOAD') {
             const onboardStatus = localStorage.getItem('onboard-status');
             if (onboardStatus === 'NO_BITCOIN') {

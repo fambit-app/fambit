@@ -8,9 +8,11 @@ if (typeof browser === 'undefined') {
 // Saves options to runtime.storage
 function save_options() {
     const donationPercentage = document.getElementById('donation-percentage').value;
+    const reportErrors = document.getElementById('report-errors').checked;
     const bannedDomains = [].map.call(document.querySelectorAll('li'), (li) => li.innerHTML);
     runtime.storage.local.set({
         'donation-percentage': donationPercentage,
+        'report-errors': reportErrors,
         'banned-domains': bannedDomains
     }, () => {
         const status = document.getElementById('status');
@@ -18,15 +20,25 @@ function save_options() {
         setTimeout(function () {
             status.textContent = '';
         }, 750);
+
+        chrome.runtime.sendMessage({
+            action: 'CHANGED_OPTIONS',
+            donationPercentage,
+            reportErrors,
+            bannedDomains
+        });
     });
 }
 
 function restore_options() {
     runtime.storage.local.get({
-        'banned-domains': [],
-        'donation-percentage': 0.0001
+        'donation-percentage': 0.0001,
+        'report-errors': true,
+        'banned-domains': []
     }, function (items) {
+        console.log('report-errors: ' + items['report-errors']);
         document.getElementById('donation-percentage').value = items['donation-percentage'];
+        document.getElementById('report-errors').checked = items['report-errors'];
         const bannedDomains = document.getElementById('banned-domains');
         if (items['banned-domains'].length > 0) {
             bannedDomains.innerHTML = '';

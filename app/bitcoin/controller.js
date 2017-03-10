@@ -7,8 +7,8 @@ const Address = require('./address');
 
 // 0.0001% of remaining funds are donated on-page-visit
 const DEFAULT_DONATION_PERCENTAGE = 0.0001;
-// Minimum amount to send in a multi-donation transaction. If too low, then the blockchain won't process the donations.
-// const THRESHOLD = 0.001; // 10 μBTC. unused currently
+// By default, report errors to Sentry.
+const REPORT_ERRORS = true;
 // Minimum delay before cached information (e.g. balance) is updated from blockchain.info
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 
@@ -109,6 +109,21 @@ class LiveController {
         const hash = bitcoinTransaction(donations);
         this._http.submitTransaction(this._address.publicKey, hash.toHex());
     }
+
+    startRaven() {
+        if (process.env.NODE_ENV === 'production') {
+            console.log('Starting Raven to watch for errors');
+            Raven.config('https://8d9e6a8ea4cd4e618bcc33992838b20b@sentry.fuzzlesoft.ca/8', {
+                stacktrace: true
+            }).install();
+        }
+    }
+    stopRaven() {
+        if (process.env.NODE_ENV === 'production') {
+            console.log('Disabling Raven');
+            Raven.uninstall();
+        }
+    }
 }
 
 /**
@@ -189,6 +204,9 @@ class FakeController {
         fakeTransactions[Date.now()] = this._pending.commit();
         this._save(JSON.stringify(fakeTransactions));
     }
+
+    startRaven() {}
+    stopRaven() {}
 }
 
 /**
@@ -198,15 +216,10 @@ class FakeController {
  * @param retrieve
  * @return Object controller
  */
-function build(donationPercentage, save, retrieve) {
-    save = save || localStorage.setItem.bind(localStorage);
-    retrieve = retrieve || localStorage.getItem.bind(localStorage);
-    if (process.env.NODE_ENV === 'production') {
-        console.log('Starting Raven to watch for errors');
-        Raven.config('https://8d9e6a8ea4cd4e618bcc33992838b20b@sentry.fuzzlesoft.ca/8', {
-            stacktrace: true
-        }).install();
-    }
+function build(donationPercentage) {
+    const save = localStorage.setItem.bind(localStorage);
+    const retrieve = localStorage.getItem.bind(localStorage);
+    const reportErrors = JSON.parse(retrieve('report-errors') || REPORT_ERRORS.toString());
 
     if (!Address.fromStorage(retrieve)) {
         Address.generate(save);
@@ -221,7 +234,9 @@ function build(donationPercentage, save, retrieve) {
         return new FakeController(save, retrieve, donationPercentage);
     }
 
-    return new LiveController(save, retrieve, donationPercentage);
+    const controller = new LiveController(save, retrieve, donationPercentage);
+    if (reportErrors) controller.startRaven();
+    return controller;
 }
 
 module.exports = build;
