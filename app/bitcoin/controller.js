@@ -9,8 +9,6 @@ const Address = require('./address');
 const DEFAULT_DONATION_PERCENTAGE = 0.0001;
 // By default, report errors to Sentry.
 const REPORT_ERRORS = true;
-// Minimum delay before cached information (e.g. balance) is updated from blockchain.info
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 
 /**
  * Gets bitcoin data and sends finished transactions to blockchain.info
@@ -39,30 +37,7 @@ class LiveController {
      * @return {*}
      */
     balance() {
-        let promise;
 
-        const cachedBalance = JSON.parse(this._retrieve('cached-balance') || '{}');
-        if (cachedBalance.date !== undefined && Date.now() < new Date(cachedBalance.date + CACHE_DURATION)) {
-            promise = Promise.resolve(cachedBalance.value);
-        } else {
-            promise = this._http.getBalance(this.publicKey());
-            promise.then((externalBalance) => {
-                if (externalBalance === undefined) {
-                    return;
-                }
-                this._save('cached-balance', JSON.stringify({
-                    date: Date.now(),
-                    value: externalBalance
-                }));
-            });
-        }
-
-        return promise.then((externalBalance) => {
-            if (externalBalance === undefined) {
-                return undefined;
-            }
-            return externalBalance - this._pending.list().reduce((prev, donation) => prev + donation.amount, 0);
-        });
     }
 
     liveBalance(onBalanceChange) {

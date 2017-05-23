@@ -1,6 +1,6 @@
 const Raven = require('raven-js');
 
-class BlockchainHttp {
+module.exports = {
 
     /**
      * Returns the balance of the wallet in milli-bitcoin
@@ -11,11 +11,11 @@ class BlockchainHttp {
         return this._getRequest(`https://blockchain.info/q/addressbalance/${address}`)
             .then((val) => parseInt(val) / 100000)
             .catch((err) => {
-                console.warn('Resolving balance error: ', err);
-                Raven.captureMessage(`Blockchain balance request failed: + ${err}`);
-                return Promise.resolve(undefined);
+                console.warn(`Blockchain balance request failed: ${err}`);
+                Raven.captureMessage(`Blockchain balance request failed: ${err}`);
+                throw err;
             });
-    }
+    },
 
     getTransactionList(address) {
         const promise = this._getRequest(`https://blockchain.info/unspent?active=${address}`);
@@ -24,12 +24,12 @@ class BlockchainHttp {
             const json = JSON.parse(val.body);
             return json.unspent_outputs;
         });
-    }
+    },
 
 
     submitTransaction(hash) {
         return this._postRequest('https://blockchain.info/pushtx', `tx=${hash}`);
-    }
+    },
 
     _getRequest(url) {
         return new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ class BlockchainHttp {
             request.timeout = 5000;
             request.send();
         });
-    }
+    },
 
     _postRequest(url, params) {
         return new Promise((resolve, reject) => {
@@ -79,6 +79,4 @@ class BlockchainHttp {
             request.send(params);
         });
     }
-}
-
-module.exports = BlockchainHttp;
+};
