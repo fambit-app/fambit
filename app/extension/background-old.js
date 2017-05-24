@@ -77,9 +77,6 @@ runtime.storage.sync.get(['donation-percentage', 'report-errors'], (res) => {
 
             localStorage.setItem('onboard-status', 'FUNDED');
             updatePopup('FUNDED');
-            runtime.runtime.sendMessage({
-                action: 'RECEIVED_BITCOIN'
-            });
         }
 
         if (onboardStatus === 'NO_BITCOIN') {

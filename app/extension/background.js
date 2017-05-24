@@ -1,19 +1,14 @@
 const raven = require('../raven');
 const init = require('../init');
-const {retrieve, saveLocal, saveMulti} = require('../storage');
+const pending = require('../bitcoin/pending-donations');
+const http = require('../bitcoin/blockchain-http');
+const ws = require('../bitcoin/blockchain-websocket');
+const balance = require('../bitcoin/bitcoin-balance');
+const transaction = require('../bitcoin/bitcoin-transaction');
+const {retrieve, retrieveMulti, retrieveLocal, save, saveLocal, saveMulti} = require('../storage');
 
 raven.start(retrieve);
 init.prepare(retrieve, saveLocal, saveMulti);
-
-function hasTabDonated() {
-    return new Promise((resolve) => {
-        chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
-            const history = JSON.parse(localStorage.getItem('page-views') || '[]');
-            const lastDonation = history.filter((donation) => donation.url === tabs[0].url)[0];
-            resolve(lastDonation && lastDonation.amount);
-        });
-    });
-}
 
 function setIcon(type = 'normal') {
     const modifier = type === 'normal' ? '' : `${type}-`;
@@ -27,12 +22,86 @@ function setIcon(type = 'normal') {
     });
 }
 
-retrieveMulti(['donation-percentage', 'report-errors']).then((res) => {
-    const donationPercentage = res['donation-percentage'];
+function hasTabDonated() {
+    return new Promise((resolve) => {
+        chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
+            const history = JSON.parse(localStorage.getItem('page-views') || '[]');
+            const lastDonation = history.filter((donation) => donation.url === tabs[0].url)[0];
+            resolve(lastDonation && lastDonation.amount);
+        });
+    });
+}
+
+// When the user changes to an already-opened tab, check history for if page did receive a donation when
+// it was originally opened, and update icon accordingly
+chrome.tabs.onActivated.addListener(() => {
+    const onboardStatus = localStorage.getItem('onboard-status');
+    if (onboardStatus === 'FUNDED' && !localStorage.getItem('viewed-funded-popup')) {
+        // Fambit has received bitcoin, but the user hasn't viewed the "funded" popup. Show the "!" icon
+        setIcon('alert');
+        return;
+    }
+
+    hasTabDonated().then((donated) => setIcon(donated ? 'donated' : 'normal'));
+});
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name !== 'SUBMIT_TRANSACTION') {
+        return;
+    }
+
+    console.log('Submitting transactions');
+    const donations = pending.commit(retrieveLocal, saveLocal);
+    retrieveMulti(['private-key', 'public-key']).then((res) => {
+        const privateKey = res['private-key'];
+        const publicKey = res['public-key'];
+        const hash = transaction(privateKey, publicKey, donations, http);
+        http.submitTransaction(hash);
+    });
+});
+
+retrieveMulti(['public-key', 'donation-percentage', 'report-errors', 'onboard-status']).then((res) => {
+    function updatePopup(onboardStatus) {
+        if (onboardStatus === 'NO_BITCOIN') {
+            setIcon('normal');
+            chrome.browserAction.setPopup({
+                popup: 'onboard-popup.html'
+            });
+
+            balance(retrieveLocal, retrieve, saveLocal).then((b) => {
+                if (b > 0) {
+                    save('onboard-status', 'FUNDED');
+                    updatePopup('FUNDED');
+                }
+            });
+
+            const wsClose = ws.listen(http, res['public-key'], (b) => {
+                if (b > 0) {
+                    save('onboard-status', 'FUNDED');
+                    updatePopup('FUNDED');
+                    wsClose();
+                }
+            });
+        } else if (onboardStatus === 'FUNDED') {
+            setIcon('alert');
+            chrome.browserAction.setPopup({
+                popup: 'funded-popup.html'
+            });
+        } else if (onboardStatus === 'DONE') {
+            setIcon('normal');
+            chrome.browserAction.setPopup({
+                popup: 'main-popup.html'
+            });
+        }
+    }
+
+    updatePopup(res['onboard-status']);
+    let donationPercentage = res['donation-percentage'];
 
     chrome.storage.onChanged.addListener((changes) => {
         if (changes['donation-percentage']) {
             controller.updateDonationPercentage(changes['donation-percentage'].newValue);
+            donationPercentage = changes['donation-percentage]'].newValue;
         }
         if (changes['report-errors']) {
             if (changes['report-errors'].newValue) {
@@ -42,45 +111,6 @@ retrieveMulti(['donation-percentage', 'report-errors']).then((res) => {
             }
         }
     });
-
-    function updatePopup(onboardStatus) {
-        function checkFunded(newBalance) {
-            if (!newBalance || newBalance <= 0 || localStorage.getItem('onboard-status') !== 'NO_BITCOIN') {
-                return;
-            }
-
-            localStorage.setItem('onboard-status', 'FUNDED');
-            updatePopup('FUNDED');
-            chrome.runtime.sendMessage({
-                action: 'RECEIVED_BITCOIN'
-            });
-        }
-
-        if (onboardStatus === 'NO_BITCOIN') {
-            chrome.browserAction.setPopup({
-                popup: 'onboard-popup.html'
-            });
-            setIcon('normal');
-
-            controller.balance().then(checkFunded);
-            controller.liveBalance((newBalance) => {
-                console.log('balance changed', newBalance);
-                checkFunded(newBalance);
-            });
-        } else if (onboardStatus === 'FUNDED') {
-            chrome.browserAction.setPopup({
-                popup: 'funded-popup.html'
-            });
-            setIcon('alert');
-        } else if (onboardStatus === 'DONE') {
-            chrome.browserAction.setPopup({
-                popup: 'main-popup.html'
-            });
-            setIcon('normal');
-        }
-    }
-
-    updatePopup(localStorage.getItem('onboard-status'));
 
     chrome.runtime.onMessage.addListener((request) => {
         if (request.action === 'PAGE_LOAD') {
@@ -141,27 +171,5 @@ retrieveMulti(['donation-percentage', 'report-errors']).then((res) => {
 
             hasTabDonated().then((donated) => setIcon(donated ? 'donated' : 'normal'));
         }
-    });
-
-    chrome.alarms.onAlarm.addListener((alarm) => {
-        if (alarm.name !== 'SUBMIT_TRANSACTION') {
-            return;
-        }
-
-        console.log('Submitting transactions');
-        controller.commitTransaction();
-    });
-
-    // When the user changes to an already-opened tab, check history for if page did receive a donation when
-    // it was originally opened, and update icon accordingly
-    chrome.tabs.onActivated.addListener(() => {
-        const onboardStatus = localStorage.getItem('onboard-status');
-        if (onboardStatus === 'FUNDED' && !localStorage.getItem('viewed-funded-popup')) {
-            // Fambit has received bitcoin, but the user hasn't viewed the "funded" popup. Show the "!" icon
-            setIcon('alert');
-            return;
-        }
-
-        hasTabDonated().then((donated) => setIcon(donated ? 'donated' : 'normal'));
     });
 });

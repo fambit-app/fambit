@@ -6,9 +6,12 @@ const bitcoinJS = require('bitcoinjs-lib');
 // http://bitcoin.stackexchange.com/a/3011 says that each output is 34 bytes.
 // Ignoring fixed bytes, as well as byte cost for inputs for simplicity, and because I'd rather err on the side of
 // paying less fees, since a long confirmation delay is OK, considering that fambit donations are _very_ async in
-// nature (one week delay already, so ¯\_(ツ)_/¯
+// nature (one week delay already, so ¯\_(ツ)_/¯)
 const MINING_FEE_RATIO = 340;
 
+/**
+ * Builds transaction hash for later submission to blockchain
+ */
 module.exports = function bitcoinTransaction(privateKey, publicKey, donations, http) {
     const donationCount = Object.keys(donations).length;
     const miningFee = donationCount * MINING_FEE_RATIO;
