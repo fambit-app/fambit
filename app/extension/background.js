@@ -13,7 +13,7 @@ function hasTabDonated() {
     return new Promise((resolve) => {
         chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
             const history = retrieveLocal('page-views');
-            const lastDonation = history.filter((donation) => donation.url === tabs[0].url)[0];
+            const lastDonation = history.filter(donation => donation.url === tabs[0].url)[0];
             resolve(lastDonation && lastDonation.amount);
         });
     });
@@ -26,20 +26,17 @@ init(retrieveMulti, isStoredLocally, saveMulti, saveLocal, [
     'banned-domains',
     'donation-percentage',
     'report-errors'
-], () => new Promise((res) => {
-    require.ensure(['bitcoinjs-lib'], () => {
-        const bitcoinJS = require('bitcoinjs-lib'); // eslint-disable-line
-        const keyPair = bitcoinJS.ECPair.makeRandom();
+], () => import(/* webpackChunkName "bitcoinJS" */ 'bitcoinjs-lib').then((bitcoinJS) => {
+    const keyPair = bitcoinJS.ECPair.makeRandom();
 
-        res({
-            'private-key': keyPair.toWIF(),
-            'public-key': keyPair.getAddress(),
-            'onboard-status': 'NO_BITCOIN',
-            'banned-domains': [],
-            'donation-percentage': 0.01, // 0.01% of the existing pool will be used for each donation
-            'report-errors': false
-        });
-    });
+    return {
+        'private-key': keyPair.toWIF(),
+        'public-key': keyPair.getAddress(),
+        'onboard-status': 'NO_BITCOIN',
+        'banned-domains': [],
+        'donation-percentage': 0.01, // 0.01% of the existing pool will be used for each donation
+        'report-errors': false
+    };
 })).then((res) => {
     const privateKey = res['private-key'];
     const publicKey = res['public-key'];
@@ -111,7 +108,7 @@ init(retrieveMulti, isStoredLocally, saveMulti, saveLocal, [
             return;
         }
 
-        hasTabDonated().then((donated) => setIcon(donated ? 'donated' : 'normal'));
+        hasTabDonated().then(donated => setIcon(donated ? 'donated' : 'normal'));
     });
 
     chrome.alarms.onAlarm.addListener((alarm) => {
@@ -121,8 +118,7 @@ init(retrieveMulti, isStoredLocally, saveMulti, saveLocal, [
 
         console.log('Submitting transactions');
         const donations = pending.commit(retrieveLocal, saveLocal);
-        const hash = transaction(privateKey, publicKey, donations, http);
-        http.submitTransaction(hash);
+        transaction(privateKey, publicKey, donations, http).then(hash => http.submitTransaction(hash));
     });
 
     chrome.runtime.onMessage.addListener((request) => {
@@ -181,7 +177,7 @@ init(retrieveMulti, isStoredLocally, saveMulti, saveLocal, [
                 save('onboard-status', 'DONE');
             }
 
-            hasTabDonated().then((donated) => setIcon(donated ? 'donated' : 'normal'));
+            hasTabDonated().then(donated => setIcon(donated ? 'donated' : 'normal'));
         }
     });
 });

@@ -9,7 +9,7 @@ module.exports = {
 
     list(retrieveLocal) {
         const donations = retrieveLocal(PENDING_DONATIONS);
-        donations.forEach((donation) => donation.date = new Date(donation.date));
+        donations.forEach(donation => donation.date = new Date(donation.date));
         return donations;
     },
 
@@ -19,7 +19,7 @@ module.exports = {
 
     removeDomain(retrieveLocal, saveLocal, domain) {
         const pendingDonations = retrieveLocal('pending-donations');
-        saveLocal('pending-donations', pendingDonations.filter((donation) => donation.domain !== domain));
+        saveLocal('pending-donations', pendingDonations.filter(donation => donation.domain !== domain));
     },
 
     commit(retrieveLocal, saveLocal) {

@@ -1,5 +1,3 @@
-const Raven = require('raven-js');
-
 module.exports = {
     listen(http, publicKey, onBalanceChanged) {
         try {
@@ -25,8 +23,6 @@ module.exports = {
                 ws.close();
             };
         } catch (err) {
-            // Probably failed to connect due to bad internet. Might as well send to Sentry, just in case network is fine
-            Raven.captureMessage('Blockchain balance request failed', err);
             return function nop() {
             };
         }

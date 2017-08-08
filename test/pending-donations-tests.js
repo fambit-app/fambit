@@ -8,12 +8,12 @@ function createMock() {
     return mock;
 }
 
-test('should not initially have any pending donations', t => {
+test('should not initially have any pending donations', (t) => {
     const mock = createMock();
     t.deepEqual(pending.list(mock.retrieve), []);
 });
 
-test('should store multiple donations', t => {
+test('should store multiple donations', (t) => {
     const mock = createMock();
     pending.queue(mock.retrieve, mock.save, 'A', 'spyu.ca', 1, new Date(0));
     pending.queue(mock.retrieve, mock.save, 'B', 'fuzzlesoft.ca', 2, new Date(1));
@@ -24,7 +24,7 @@ test('should store multiple donations', t => {
     ]);
 });
 
-test('should group donations to same address on commit', t => {
+test('should group donations to same address on commit', (t) => {
     const mock = createMock();
 
     pending.queue(mock.retrieve, mock.save, 'A', 'spyu.ca', 1, new Date(0));
@@ -38,7 +38,7 @@ test('should group donations to same address on commit', t => {
     });
 });
 
-test('should clear pending donations after transaction', t => {
+test('should clear pending donations after transaction', (t) => {
     const mock = createMock();
 
     pending.queue(mock.retrieve, mock.save, 'A', 'spyu.ca', 1, new Date(0));

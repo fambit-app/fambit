@@ -1,5 +1,3 @@
-const bitcoinJS = require('bitcoinjs-lib');
-
 // The number of satoshis to pay to the miners, based on how many "outputs"/donations occurred.
 // According to http://www.coindesk.com/new-service-finds-optimum-bitcoin-transaction-fee, it's chill to provide a fee
 // of 10 satoshis per byte.
@@ -13,42 +11,44 @@ const MINING_FEE_RATIO = 340;
  * Builds transaction hash for later submission to blockchain
  */
 module.exports = function bitcoinTransaction(privateKey, publicKey, donations, http) {
-    const donationCount = Object.keys(donations).length;
-    const miningFee = donationCount * MINING_FEE_RATIO;
-    let totalDonatedSatoshi = 0;
+    return import(/* webpackChunkName "bitcoinjs-lib" */ 'bitcoinjs-lib').then((bitcoinJS) => {
+        const donationCount = Object.keys(donations).length;
+        const miningFee = donationCount * MINING_FEE_RATIO;
+        let totalDonatedSatoshi = 0;
 
-    const transaction = new bitcoinJS.TransactionBuilder();
-    for (const address in donations) {
-        if (Object.prototype.hasOwnProperty.call(donations, address)) {
-            const amount = donations[address] * 100; // μBTC -> satoshi
-            transaction.addOutput(address, amount);
-            totalDonatedSatoshi += amount;
+        const transaction = new bitcoinJS.TransactionBuilder();
+        for (const address in donations) {
+            if (Object.prototype.hasOwnProperty.call(donations, address)) {
+                const amount = donations[address] * 100; // μBTC -> satoshi
+                transaction.addOutput(address, amount);
+                totalDonatedSatoshi += amount;
+            }
         }
-    }
 
-    // Total amount of bitcoin from "input transactions" to be used to pay for all the microdonations.
-    // This bitcoin comes from all the transactions from the user -> the fambit wallet
-    let inputSatoshi = 0;
-    http.getTransactionList(publicKey).then((unspentInputs) => {
-        let localIndex = 0;
-        while (inputSatoshi < totalDonatedSatoshi) {
-            if (localIndex >= unspentInputs.length) {
-                throw new Error('Not enough bitcoin to perform donation');
+        // Total amount of bitcoin from "input transactions" to be used to pay for all the microdonations.
+        // This bitcoin comes from all the transactions from the user -> the fambit wallet
+        let inputSatoshi = 0;
+        return http.getTransactionList(publicKey).then((unspentInputs) => {
+            let localIndex = 0;
+            while (inputSatoshi < totalDonatedSatoshi) {
+                if (localIndex >= unspentInputs.length) {
+                    throw new Error('Not enough bitcoin to perform donation');
+                }
+
+                const inputToUse = unspentInputs[localIndex++];
+                transaction.addInput(inputToUse.tx_hash, inputToUse.tx_index);
+                inputSatoshi += inputToUse.value;
             }
 
-            const inputToUse = unspentInputs[localIndex++];
-            transaction.addInput(inputToUse.tx_hash, inputToUse.tx_index);
-            inputSatoshi += inputToUse.value;
-        }
+            // Put "dust" back in receiving address. Leftover bitcoin not put in an output is given as a fee
+            // to the miner
+            const dust = inputSatoshi - totalDonatedSatoshi;
+            if (dust > 0) {
+                transaction.addOutput(publicKey, dust - miningFee);
+            }
 
-        // Put "dust" back in receiving address. Leftover bitcoin not put in an output is given as a fee
-        // to the miner
-        const dust = inputSatoshi - totalDonatedSatoshi;
-        if (dust > 0) {
-            transaction.addOutput(publicKey, dust - miningFee);
-        }
-
-        transaction.sign(0, bitcoinJS.ECPair.fromWIF(privateKey));
-        return transaction.build();
+            transaction.sign(0, bitcoinJS.ECPair.fromWIF(privateKey));
+            return transaction.build();
+        });
     });
 };

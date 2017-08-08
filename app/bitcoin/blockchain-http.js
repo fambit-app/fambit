@@ -1,5 +1,3 @@
-const Raven = require('raven-js');
-
 module.exports = {
 
     /**
@@ -9,10 +7,9 @@ module.exports = {
      */
     getBalance(address) {
         return this._getRequest(`https://blockchain.info/q/addressbalance/${address}`)
-            .then((val) => parseInt(val) / 100000)
+            .then(val => parseInt(val) / 100000)
             .catch((err) => {
                 console.warn(`Blockchain balance request failed: ${err}`);
-                Raven.captureMessage(`Blockchain balance request failed: ${err}`);
                 throw err;
             });
     },

@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addressElement = document.getElementById('bitcoin-address');
     const amountElement = document.getElementById('pool-amount');
 
-    retrieve('public-key').then((publicKey) => addressElement.innerHTML = publicKey);
+    retrieve('public-key').then(publicKey => addressElement.innerHTML = publicKey);
     balance(isStoredLocally, retrieveLocal, retrieve, saveLocal)
         .then((bitcoin) => {
             amountContainer.classList.remove('error');
