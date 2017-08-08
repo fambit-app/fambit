@@ -4,7 +4,7 @@
   "description": "WebExtension to microdonate to visited websites",
   "scripts": {
     "dev": "webpack --watch --env.prod=false",
-    "test": "ava --tap",
+    "test": "ava",
     "lint": "eslint ./app ./test",
     "dist": "webpack --env.prod=true"
   },
@@ -31,14 +31,14 @@
     "bitcoinjs-lib": "^2.2.0"
   },
   "devDependencies": {
-    "ava": "^0.16.0",
+    "ava": "^0.21.0",
     "copy-webpack-plugin": "^4.0.1",
     "eslint": "^3.13.1",
     "eslint-config-airbnb-base": "^5.0.3",
     "eslint-plugin-import": "^1.14.0",
     "json-loader": "^0.5.4",
     "raven-js": "^3.9.1",
-    "webpack": "^2.1.0-beta.27"
+    "webpack": "^3.4.1"
   },
   "eslintConfig": {
     "extends": "airbnb-base",
