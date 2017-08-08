@@ -23,7 +23,7 @@ module.exports = {
     },
 
     commit(retrieveLocal, saveLocal) {
-        const donations = this.list(retrieveLocal); // TODO idk if this will work
+        const donations = this.list(retrieveLocal);
         const rawDonations = {};
 
         // Group donations by bitcoin address, strips away unneeded info like date/domain

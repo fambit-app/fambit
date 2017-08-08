@@ -1,6 +1,6 @@
 const raven = require('../raven');
 const balance = require('../bitcoin/bitcoin-balance');
-const {retrieveLocal, retrieve, save, saveLocal} = require('../storage');
+const {isStoredLocally, retrieveLocal, retrieve, save, saveLocal} = require('../storage');
 const format = require('./bitcoin-format');
 const pending = require('../bitcoin/pending-donations');
 
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const amountElement = document.getElementById('pool-amount');
     retrieve('public-key').then((publicKey) => addressElement.innerHTML = publicKey);
 
-    balance(retrieveLocal, retrieve, saveLocal)
+    balance(isStoredLocally, retrieveLocal, retrieve, saveLocal)
         .then((bitcoin) => {
             amountContainer.classList.remove('error');
             amountElement.innerHTML = format(bitcoin);

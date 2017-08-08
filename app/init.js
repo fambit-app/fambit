@@ -1,27 +1,26 @@
-const bitcoinJS = require('bitcoinjs-lib');
-
 const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 days
-module.exports = {
-    prepare(retrieve, saveLocal, saveMulti) {
-        return retrieve('public-key').then((publicKey) => {
-            if (publicKey) {
-                return;
-            }
-            // Otherwise, is first install
+module.exports = function init(retrieveMulti, isStoredLocally, saveMulti, saveLocal, requiredProperties,
+                               createDefaults) {
+    if (!isStoredLocally('installed-locally')) {
+        // First run on _this_ machine
 
-            chrome.alarms.create('SUBMIT_TRANSACTION', {
-                periodInMinutes: TRANSACTION_DELAY_MINUTES
-            });
-
-            saveLocal('cached-balance', undefined);
-            saveLocal('page-views', []);
-            saveLocal('pending-donations', []);
-            const keyPair = bitcoinJS.ECPair.makeRandom();
-            return saveMulti({
-                'private-key': keyPair.toWIF(),
-                'public-key': keyPair.getAddress(),
-                'onboard-status': 'NO_BITCOIN'
-            });
-        });
+        saveLocal('installed-locally', true);
+        saveLocal('viewed-funded-popup', false);
+        saveLocal('cached-balance', undefined);
+        saveLocal('page-views', []);
+        saveLocal('pending-donations', []);
     }
+
+    return retrieveMulti(requiredProperties).then((res) => {
+        if (res[requiredProperties[0]] !== undefined) { // One of the properties is set, this isn't a first-install
+            return res;
+        }
+
+        chrome.alarms.create('SUBMIT_TRANSACTION', {
+            periodInMinutes: TRANSACTION_DELAY_MINUTES
+        });
+
+        // Save defaults, then return defaults to original caller
+        return createDefaults().then((defaults) => saveMulti(defaults).then(() => defaults));
+    });
 };

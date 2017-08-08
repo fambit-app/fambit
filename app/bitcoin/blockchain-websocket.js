@@ -6,7 +6,7 @@ module.exports = {
             const ws = new WebSocket('wss://ws.blockchain.info/inv');
 
             ws.onopen = () => {
-                this._ws.send(JSON.stringify({
+                ws.send(JSON.stringify({
                     op: 'addr_sub',
                     addr: publicKey
                 }));
