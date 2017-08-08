@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const amountContainer = document.getElementsByClassName('amount')[0];
     const addressElement = document.getElementById('bitcoin-address');
     const amountElement = document.getElementById('pool-amount');
-    retrieve('public-key').then((publicKey) => addressElement.innerHTML = publicKey);
+    retrieve('public-key').then(publicKey => addressElement.innerHTML = publicKey);
 
     balance(isStoredLocally, retrieveLocal, retrieve, saveLocal)
         .then((bitcoin) => {
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderHistory(history);
     chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
         retrieve('banned-domains').then((bannedDomains) => {
-            const currentDonation = history.filter((donation) => donation.url === tabs[0].url)[0] || history[0];
+            const currentDonation = history.filter(donation => donation.url === tabs[0].url)[0] || history[0];
             // ^ Get the last donation with same url as current page. If none exists (e.g. Chrome newTab), just use
             // the last donation information
 
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         pending.removeDomain(retrieveLocal, saveLocal, currentDonation.domain);
 
                         history
-                            .filter((view) => view.domain === currentDonation.domain)
+                            .filter(view => view.domain === currentDonation.domain)
                             .forEach((view) => {
                                 view.amount = undefined;
                                 view.reason = 'Domain banned';
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     cancelDonationElement.title = 'Cancelling this donation stops the microdonation for this visit';
                     cancelDonationElement.addEventListener('click', function cancelDonation() {
                         const pendingDonations = retrieveLocal('pending-donations');
-                        const withoutCancelled = pendingDonations.filter((donation) => currentDonation.date !== donation.date);
+                        const withoutCancelled = pendingDonations.filter(donation => currentDonation.date !== donation.date);
                         saveLocal('pending-donations', withoutCancelled);
                         currentDonation.amount = undefined;
                         currentDonation.reason = 'Donation cancelled';

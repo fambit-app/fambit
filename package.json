@@ -28,25 +28,28 @@
   },
   "homepage": "https://github.com/fambit-app/fambit#readme",
   "dependencies": {
-    "bitcoinjs-lib": "^2.2.0"
+    "bitcoinjs-lib": "^2.2.0",
+    "raven-js": "^3.9.1"
   },
   "devDependencies": {
     "ava": "^0.21.0",
+    "babel-eslint": "^7.2.3",
     "copy-webpack-plugin": "^4.0.1",
-    "eslint": "^3.13.1",
-    "eslint-config-airbnb-base": "^5.0.3",
-    "eslint-plugin-import": "^1.14.0",
+    "eslint": "^4.4.1",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-import": "^2.7.0",
     "json-loader": "^0.5.4",
-    "raven-js": "^3.9.1",
     "webpack": "^3.4.1"
   },
   "eslintConfig": {
+    "parser": "babel-eslint",
     "extends": "airbnb-base",
     "rules": {
       "indent": [
         "error",
         4
       ],
+      "no-plusplus": 0,
       "import/no-extraneous-dependencies": 0,
       "no-console": 0,
       "comma-dangle": 0,

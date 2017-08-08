@@ -1,5 +1,4 @@
-module.exports = function createDonation(isStoredLocally, retrieveLocal, retrieve, saveLocal, getBalance, donationPercentage,
-                                         bannedDomains, pending, request) {
+module.exports = function createDonation(isStoredLocally, retrieveLocal, retrieve, saveLocal, getBalance, donationPercentage, bannedDomains, pending, request) {
     const date = Date.now();
     if (!request.recipient) {
         return Promise.resolve({

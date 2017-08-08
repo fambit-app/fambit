@@ -1,6 +1,6 @@
 const TRANSACTION_DELAY_MINUTES = 10080; // 1 week = 60 minutes * 24 hours * 7 days
 module.exports = function init(retrieveMulti, isStoredLocally, saveMulti, saveLocal, requiredProperties,
-                               createDefaults) {
+    createDefaults) {
     if (!isStoredLocally('installed-locally')) {
         // First run on _this_ machine
 
@@ -21,6 +21,6 @@ module.exports = function init(retrieveMulti, isStoredLocally, saveMulti, saveLo
         });
 
         // Save defaults, then return defaults to original caller
-        return createDefaults().then((defaults) => saveMulti(defaults).then(() => defaults));
+        return createDefaults().then(defaults => saveMulti(defaults).then(() => defaults));
     });
 };

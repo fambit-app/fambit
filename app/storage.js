@@ -13,7 +13,7 @@ module.exports = {
 
     retrieve(key) {
         return new Promise((res) => {
-            chrome.storage.sync.get(key, (items) => res(items[key]));
+            chrome.storage.sync.get(key, items => res(items[key]));
         });
     },
 

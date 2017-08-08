@@ -27,7 +27,7 @@
   },
 
   "background": {
-    "scripts": ["commons.js", "background.js"],
+    "scripts": ["background.js"],
     "persistent": false
   },
 

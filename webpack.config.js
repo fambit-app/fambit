@@ -1,8 +1,8 @@
-var webpack = require('webpack');
-var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-var config = {
+const config = {
     entry: {
         'background': './app/extension/background.js',
         'onboard-popup': './app/extension/onboard-popup.js',
@@ -15,10 +15,6 @@ var config = {
         ]
     },
     plugins: [
-        new CommonsChunkPlugin({
-            name: "commons",
-            filename: "commons.js"
-        }),
         new CopyWebpackPlugin([
             { from: 'manifest.json' },
             { from: 'resources' }
@@ -26,9 +22,10 @@ var config = {
     ],
     output: {
         filename: '[name].js',
-        path: __dirname + '/dist'
+        path: path.resolve(__dirname, 'dist'),
+        chunkFilename: '[name].bundle.js'
     },
-    devtool: "inline-source-map"
+    devtool: 'inline-source-map'
 };
 
 module.exports = (env) => {

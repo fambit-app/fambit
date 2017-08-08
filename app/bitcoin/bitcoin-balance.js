@@ -13,7 +13,7 @@ module.exports = function balance(isStoredLocally, retrieveLocal, retrieve, save
         if (cachedBalance !== undefined && Date.now() < new Date(cachedBalance.date + CACHE_DURATION)) {
             promise = Promise.resolve(cachedBalance.value);
         } else {
-            promise = retrieve('public-key').then((publicKey) => http.getBalance(publicKey).then((externalBalance) => {
+            promise = retrieve('public-key').then(publicKey => http.getBalance(publicKey).then((externalBalance) => {
                 saveLocal('cached-balance', {
                     date: Date.now(),
                     value: externalBalance
@@ -23,6 +23,6 @@ module.exports = function balance(isStoredLocally, retrieveLocal, retrieve, save
         }
     }
 
-    return promise.then((externalBalance) => externalBalance - pending.balancePending(retrieveLocal));
+    return promise.then(externalBalance => externalBalance - pending.balancePending(retrieveLocal));
 };
 
